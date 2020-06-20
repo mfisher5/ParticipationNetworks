@@ -1,0 +1,232 @@
+---
+title: "Process Fish Tickets for Participation Networks"
+author: M. Fisher
+date: "Written Feb. 5, 2019. Last Run `r Sys.Date()`"
+output:
+  html_document:
+    df_print: paged
+    toc: yes
+    toc_depth: '3'
+  pdf_document:
+    highlight: haddock
+    number_sections: yes
+    toc: yes
+    toc_depth: '3'
+geometry: margin=1in
+subtitle: Preparation for network analysis in Fisher et al.
+fontsize: 11pt
+---
+
+
+# Description
+
+This code processes raw [PacFIN](www.pacfin.pmsfc.org) fish tickets, which will then be used to generate participation networks. It is designed to write out a separate file for each year of input data, by calendar and crab year.
+
+This version of the script will replace PacFIN's nominal species IDs with the equivalent regular species IDs. For more on nominal IDs, see the [PacFIN FAQs page](https://pacfin.psmfc.org/data/faqs/).
+<br>
+<br>
+
+```{r "setup", include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+if(!require("here")) {install.packages("here")}
+if(!require("tidyverse")) {install.packages("tidyverse")}
+if(!require("foreign")) {install.packages("foreign")}
+if(!require("lubridate")) {install.packages("lubridate")}
+
+## start time for full script
+script_start_time <- Sys.time()
+```
+
+
+This script requires the following packages. 
+```{r packages, message=FALSE, warning=FALSE}
+library(here)
+library(tidyverse)
+library(foreign)
+library(lubridate)
+```
+<br>
+<br>
+
+# User Inputs 
+
+Select your directories. 
+```{r get_dir}
+## raw PacFIN fish ticket data file location
+indir <- "../Participation_Networks/input_data"
+
+## output directory for processed fish tickets
+processdir <- "data/input"
+```
+<br>
+
+Specify file name of the raw fish ticket data file. This script takes a flexible input file name, but will write out hard-coded file names for consistency through the rest of the analysis.
+```{r get_filenames}
+myfile <- "2006_2016_compFT.csv"
+# myfile <- "fish tickets 2016-2018.csv"
+```
+<br>
+
+Set a few more user inputs
+<br>
+*If you decide to write out the processed fish ticket data using crab years as time increments (`crab_year=TRUE`), be sure to supply all of the necessary calendar years. For example, if you are processing fish tickets for the 2014 crab year, you will need to read in raw PacFIN fish ticket data for the calendar years 2013 and 2014; if you are processing fish tickets for the 2014 and 2015 crab years, you will need to read in raw PacFIN fish ticket data for calendar years 2014,2015,2016.*
+```{r inputs}
+## do you want to write out the fish ticket data as crab years? [TRUE/FALSE]
+crab_year = TRUE
+
+## if crab_year = TRUE, which crab years of fish tickets are you processing? [numeric vector]
+crab_years <- seq(2014,2015)
+
+## which years of fish tickets are you processing? [numeric vector]
+years <- seq(2014,2016)
+
+## do you want to write out the average price per pounds calculated from the data? [TRUE/FALSE]
+write_ppp = FALSE
+```
+<br>
+
+# 1: Edit PacFIN Data
+
+## 1.1. Read, Subset data
+
+This should be a `.csv` file containing raw PacFIN data.
+```{r rawdata}
+rawdat <- read.csv(here::here(indir,myfile)) %>%
+  filter(LANDING_YEAR %in%  years)
+colnames(rawdat)
+```
+<br>
+
+Subset the raw data to include only the columns that are needed. Then rename the columns that will be retained in the final processed data. The last three columns are used to calculate per-species / total revenue and landed weight, but will not ultimately be retained.
+```{r subset}
+rawdat.sub <- select(rawdat, c(FISH_TICKET_ID, PACFIN_PORT_CODE, PACFIN_GROUP_PORT_CODE, VESSEL_NUM, AGENCY_CODE, COUNCIL_CODE, 
+                               GEAR_CODE, PACFIN_GROUP_GEAR_CODE, REMOVAL_TYPE_NAME, REMOVAL_TYPE_CODE, DEALER_NUM, FLEET_CODE,
+                               LANDING_DATE, LANDING_YEAR, 
+                               PACFIN_SPECIES_CODE, LANDED_WEIGHT_LBS, PRICE_PER_POUND, EXVESSEL_REVENUE))
+
+colnames(rawdat.sub) <- c("trip_id","pcid", "pcgroup","drvid", "agid", "council",
+                          "grid","grgroup","removal_type", "removal_type_code","proc", "fleet",
+                          "tdate", "year", 
+                          "spid", "pounds", "ppp","revenue")
+```
+<br>
+
+```{r include=FALSE}
+## clean up space
+rm(rawdat)
+```
+<br>
+
+Remove fish tickets with an unknown (`UNKNOWN`) OR MISSING (`""` / `MISSING`) vessel identifier.
+```{r filter}
+rawdat.sub <- rawdat.sub %>%
+  filter(drvid != "UNKNOWN") %>%
+  filter(drvid != "") %>%
+  filter(drvid != "MISSING")
+```
+<br>
+
+
+## 1.2. Edit, Add columns
+
+First, edit and add columns which describe the fish ticket date. 
+```{r edit_columns}
+rawdat.sub <- rawdat.sub %>%
+  ## create combined vessel ID / year variable
+  mutate(drvid_year = paste0(drvid,"_", year)) %>%
+  ## create 'date' object for ticket landing date
+  mutate(tdate = as.Date(as.character(tdate), "%d-%b-%y")) %>%
+  mutate(tdate = ymd(tdate)) %>%
+  ## create 'calendar week of landing' variable
+  mutate(tweek=week(tdate))
+
+## QC: check first and last date of landing for each year, and total tickets per year.
+rawdat.sub %>% group_by(year) %>%
+  summarise(first_ticket = min(tdate), last_ticket = max(tdate), total_tickets = length(unique(trip_id)))
+```
+<br>
+
+Next edit and add columns which describe the landings recorded on the first ticket. First, replace nominal species IDs (*nominal species id that were not shared: rougheye + blackspot (RBR1)*).
+```{r nom_ID}
+rawdat.sub <- rawdat.sub %>%
+  mutate(spid_recode = recode(as.character(rawdat.sub$spid), BMO1 = "BMOL", DVR1 = "DOVR", EGL1 = "EGLS", PTR1 = "PTRL", CSL1 = "CSOL",
+                                     REX1 = "REX", RSL1 = "RSOL", SFL1 = "STRY", SSO1= "SSOL", LDB1 = "LDAB", PDB1 = "PDAB", SDB1 = "SSDB", 
+                                     ART1 = "ARTH", BSK1 = "BSKT", BLK1 = "BLCK", CNR1 = "CNRY", DBR1 = "DBRK", BLU1 = "BLUR",
+                                     BRW1 = "BRWN", CHN1 = "CHNA", CLC1 = "CLCO", COP1 = "COPP", OLV1 = "OLVE", QLB1 = "QLBK", TRE1 = "TREE",
+                                     BYL1 = "BYEL", GPH1 = "GPHR", GRS1 = "GRAS", KLP1 = "KLPR", BCC1 = "BCAC", CLP1 = "CLPR", CWC1 = "CWCD",
+                                     BRZ1 = "BRNZ", CML1 = "CMEL", GBL1 = "GBLC", GSP1 = "GSPT", GSR1 = "GSRK", HNY1 = "HNYC", MXR1 = "MXRF",
+                                     PNK1 = "PNKR", PRR1 = "PRRK", ROS1 = "ROSY", RST1 = "RSTN", SPK1 = "SPKL", SQR1 = "SQRS", STL1 = "STRK",
+                                     STR1 = "STAR", SWS1 = "SWSP", TGR1 = "TIGR", VRM1= "VRML", SNS1 = "SNOS", SRK1 = "SRKR", ARR1 = "ARRA",
+                                     BGL1 = "BLGL", BNK1 = "BANK", RDB1 = "RDBD", SBL1 = "SBLY", SCR1 = "SCOR", FLG1 = "FLAG", YTR1 = "YTRK",
+                                     POP2 = "POP", LSP1 = "LSPN", SSP1 = "SSPN", THD1 = "THDS", WDW1="WDOW", YEY1 = "YEYE", CBZ1 = "CBZN",
+                                     KGL1 = "KLPG", LCD1 = "LCOD", CHL1="CHLB", RGL1 = "RCKG", SHP1 = "SHPD"))
+```
+<br>
+
+Next, add in an estimated exvessel revenue for commercial fish tickets which have no revenue recorded. To do so, we calculate an average price per pound for each species, for every year / week / port group. Then we create an adjusted `ppp` column for trips without revenue, and calculate the `adj_revenue` by multiplying `adj_ppp * pounds`. 
+```{r adjust_revenue}
+## get the average ppp for each species/year/week/port group, write out 
+ppp_key <- rawdat.sub %>%
+  filter(ppp > 0) %>%
+  group_by(year, tweek, spid_recode, pcgroup) %>%
+  summarise(avg_ppp = mean(ppp, na.rm=TRUE))
+if(write_ppp){write.csv(ppp_key, paste0(processdir, "Price_per_Pound_Key_",paste0(years,collapse="-"), ".csv"), row.names=FALSE)}
+
+## recalculate revenue for each ticket
+rawdat.sub <- rawdat.sub %>%
+  mutate(adj_ppp = ifelse(removal_type_code %in% c("C","D"),ifelse(ppp != 0, ppp, as.numeric(filter(ppp_key, year == year & tweek == tweek & spid_recode == spid_recode & pcgroup == pcgroup)$avg_ppp)),ppp)) %>%
+  mutate(adj_revenue = ifelse(revenue != 0, revenue, adj_ppp*pounds))
+
+cat("Added in ", sum(!is.na(rawdat.sub$ppp)) - sum(rawdat.sub$ppp != 0), " adjusted ppp.")
+```
+<br>
+
+# 2: Write out fish tickets
+
+## 2.1. By year
+```{r write, eval=TRUE}
+for(y in years){
+  ## grab data for given year, reorder columns
+  tmp_out <- rawdat.sub %>%
+    filter(year == y) %>%
+    dplyr::select(c(trip_id, year, tdate,agid, 
+                       pcgroup, pcid, spid, spid_recode, council,
+                       grgroup, grid, removal_type,removal_type_code,
+                       drvid, drvid_year,proc, fleet, pounds, ppp, adj_ppp,revenue,adj_revenue))
+  write.csv(tmp_out, here::here(processdir, paste0("fish_tickets_", y, "_processed_for_networks.csv")), row.names=FALSE)
+}
+```
+<br>
+
+## 2.2. By crab year
+
+A crab year is defined as week 46 of year 1 through week 45 of year 2; for example, the Use crab year to split data frame, but remove the crab_year column from data set before writing out to file.
+```{r write_crab, eval=TRUE}
+if(crab_year){
+  ## create "crab_year" column
+  rawdat.sub <- rawdat.sub %>%
+    mutate(crab_year = ifelse(tweek > 45, year, year - 1))
+  ## for each crab year...
+  for(y in crab_years){
+    ## subset the data frame
+    tmp_out <- rawdat.sub %>%
+      filter(crab_year == y) %>%
+      dplyr::select(c(trip_id, year, crab_year, tdate,agid, 
+                       pcgroup, pcid, spid, spid_recode, council,
+                       grgroup, grid, removal_type,removal_type_code,
+                       drvid, drvid_year,proc, fleet, pounds, ppp, adj_ppp,revenue,adj_revenue))
+    ## write out
+    write.csv(tmp_out, here::here(processdir, paste0("fish_tickets_crab", y, "_processed_for_networks.csv")), row.names=FALSE)
+  }
+}
+```
+<br>
+<br>
+
+---
+
+Script runtime: 
+```{r echo=FALSE}
+Sys.time()-script_start_time
+```
