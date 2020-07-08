@@ -7,7 +7,8 @@ Use California fishery landings data to generate and analyze fisheries participa
 
 The directory structure follows Wilson et al. (2017) *Good enough practices in scientific computing*. All Rmd scripts for the analysis are in **scripts**, custom functions sourced for the analysis are in **R**,  documentation is in **doc**, and all raw, processed, and intermediate data files are saved in the **data** directory. Results (figures / table, final network metrics) will be saved into the **results** folder. Functions have been documented using `Roxygen2` syntax. This repository builds on R code from [Fuller et al. (2017)](https://doi.org/10.1093/icesjms/fsx128).
 
-Landings data is not included for confidentiality, but the non-confidential igraph objects and network statistics are in the **data** folder.
+Raw landings and registration data is not included for confidentiality, and its use in this research is protected under a non-disclosure agreement. However, these data can be acquired by direct request from the California Department of Fish and Wildlife. 
+The non-confidential igraph objects and network statistics, used to produce tables / figures and run GLMs, are provided in the **data** folder.
 
 To rerun the entire analysis, use the ordered .Rmd scripts in the **scripts** folder.
 
