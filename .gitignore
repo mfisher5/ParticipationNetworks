@@ -1,8 +1,7 @@
 .Rproj.user
 data/**/*.csv
 data/**/*.png
-data/networks/vessel_flow/*.rds
-results/statistics/*.csv
+results/statistics/*SPEARMAN.csv
 !data/input/pcgroup_mean_coordinates.csv
 !data/input/DCRB_Historic_Closures_CA_updated.csv
 results/figures/*.png
