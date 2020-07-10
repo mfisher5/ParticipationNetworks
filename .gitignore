@@ -2,6 +2,7 @@
 data/**/*.csv
 data/**/*.png
 results/statistics/*SPEARMAN.csv
+results/statistics/2007_2016*.csv
 !data/input/pcgroup_mean_coordinates.csv
 !data/input/DCRB_Historic_Closures_CA_updated.csv
 results/figures/*.png
