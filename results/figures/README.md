@@ -1,3 +1,3 @@
 ## Results: Figures
 
-Figures in Fisher et al. (in prep)
+Graphs and figures in the main text and supplement of Fisher et al. (in revision)

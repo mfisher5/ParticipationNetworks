@@ -1,3 +1,3 @@
-## Results: Data
+## Results: Statistics
 
-Network metrics calculated from fisheries participation networks, used for statistical analysis of the impact of the 2015-16 HAB on network topology.
+Network metrics (node- and network-level) calculated from undirected fisheries participation networks.
