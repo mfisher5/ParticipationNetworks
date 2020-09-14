@@ -18,6 +18,14 @@ library(here)
 # source plotting functions
 source(here::here("R/vessel_flow_networks_fun.R"))
 
+# set objects
+myports <- c("CCA","ERA","BGA","BDA","SFA","MNA","MRA")
+portnames <- c("Crescent City", "Eureka", "Fort Bragg", "Bodega Bay", "San Francisco", "Monterey Bay", "Morro Bay")
+indir <- "data/networks/vessel_flow"
+
+
+
+# Function to Plot --------------------------------------------------------
 # function to change node names
 rename_vertices <- function(mygraph){
   new_names <- V(mygraph)$common_name %>%
@@ -37,13 +45,6 @@ rename_vertices <- function(mygraph){
   return(mygraph)
 }
 
-# set objects
-myports <- c("CCA","ERA","BGA","BDA","SFA","MNA","MRA")
-portnames <- c("Crescent City", "Eureka", "Fort Bragg", "Bodega Bay", "San Francisco", "Monterey Bay", "Morro Bay")
-indir <- "data/networks/vessel_flow"
-
-
-# Plotting Function -------------------------------------------------------
 
 plot_graph = function (mygraph, alt_dcrb=TRUE, dist_y=1.8) {
   ## prepare for plotting ##

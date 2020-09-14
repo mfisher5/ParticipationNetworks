@@ -17,28 +17,14 @@ library(here)
 # source plotting functions
 source("R/vessel_flow_networks_fun.R")
 
-# function to change node names
-rename_vertices <- function(mygraph){
-  new_names <- V(mygraph)$common_name %>%
-    str_replace("Misc. Pot/H&L", "Misc.(Pot,HL)") %>%
-    str_replace("Misc. Fisheries", "Misc.") %>%
-    str_replace("Rockfish/Lcod","RockLing") %>%
-    str_replace("DTS Trawl","Groundfish") %>%
-    str_replace("Dcrab","D.crab")
-  new_names[which(new_names=="Hagfish (pot)")] <- "Hagfish"
-  new_names[which(new_names=="Sablefish (Lgl)")] <- "Sablefish"
-  new_names[which(new_names=="Sablefish (pot)")] <- "Sablefish"
-  V(mygraph)$common_name <- new_names
-  return(mygraph)
-}
-
 # set objects
 myports <- c("CCA","ERA","BGA","BDA","SFA","MNA","MRA")
 portnames <- c("Crescent City", "Eureka", "Fort Bragg", "Bodega Bay", "San Francisco", "Monterey Bay", "Morro Bay")
 indir <- "output/networks/crab_vessel/graph_objects/"
 
 
-# Plotting Function -------------------------------------------------------
+
+# Functions for Plotting --------------------------------------------------
 
 # function to change node names
 rename_vertices <- function(mygraph){
