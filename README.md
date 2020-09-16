@@ -10,13 +10,36 @@ Use fishery landings data to generate and analyze fisheries participation networ
 ---
 
 
-The directory structure follows Wilson et al. (2017) *Good enough practices in scientific computing*. All Rmd scripts for the analysis are in **scripts**, custom functions sourced for the analysis are in **R**,  documentation is in **doc**, and all raw, processed, and intermediate data files are saved in the **data** directory. Results (figures / table, final network metrics) will be saved into the **results** folder. Functions have been documented using `Roxygen2` syntax. 
+The directory structure follows Wilson et al. (2017) *Good enough practices in scientific computing*. 
 
-Raw landings and registration data is not included for confidentiality, and its use in this research is protected under a non-disclosure agreement. However, these data can be acquired by direct request from the California Department of Fish and Wildlife. 
-
-The non-confidential networks and network metrics, used to produce tables / figures and run the generalized linear models, are provided in the **data** and the **results** folder.
+- All Rmd scripts for the analysis are in **scripts**
+- Custom functions sourced for the analysis are in **R**. Functions have been documented using `Roxygen2` syntax. 
+- Documentation, including detailed descriptions of directed and undirected network structure, is in **doc**
+- Raw, processed, and intermediate data files are saved in **data**
+- Results (figures / tables, final network metrics) will be saved into  **results**
 
 To rerun the entire analysis, use the ordered .Rmd scripts in the **scripts** folder.
+
+<br>
+<br>
+
+### Data
+
+Raw landings and registration data is not included for confidentiality, and its use in Fisher et al. (in revisions) is protected under a non-disclosure agreement. However, these data can be acquired by direct request from the California Department of Fish and Wildlife. We have provided the SQL code to download raw data from the PacFIN database in the [data/raw](https://github.com/mfisher5/ParticipationNetworks/tree/master/data/raw) folder.
+
+We have provided the following aggregated, non-confidential data:
+1. Adjacency matrices and *igraph* objects for undirected fisheries participation networks (**data** directory)
+2. Adjacency matrices and *igraph* objects for directed participation networks (**data** directory)
+3. Network metrics (node- and network-level) calculated from undirected fisheries participation networks, used to run generalized linear models (**results** directory)
+
+<br>
+
+We have also provided the following ancillary data in the **data** directory:
+
+1. Duration of district closures in the California Dungeness crab fishery, from the 2007 through 2017 crab years
+2. The date that the first port of landing opened during the 2016 crab year, for each port group in California.
+3. Coordinates and Dungeness crab fishery betweenness centrality for California port groups
+
 
 
 
