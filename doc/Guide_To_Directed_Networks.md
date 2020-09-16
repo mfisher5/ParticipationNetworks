@@ -21,7 +21,7 @@ Nodes are sized according to the number of vessels which participated in the rep
 
 The color of each node indicates the gear type used in the fishery (with "No Fishing", "Other Port" alternatives in gray). 
 
-![node-color-legend]()
+![node-color-legend](https://github.com/mfisher5/ParticipationNetworks/blob/master/doc/img/network_node_legend.png?raw=true)
 
 <br>
 
@@ -29,7 +29,7 @@ The color of each node indicates the gear type used in the fishery (with "No Fis
 
 We refer to each commercial fishing season using “crab years,” which span from November through October of the following year. For example, the 2016 crab year corresponds to the 2015-16 fishing season (i.e. Nov. 2015 - Oct. 2016). To observe behavioral responses during and immediately after the 2016 closures, we further subset each crab year into an early and a late season delineated by the dates of the 2016 closures. Spatial variation was observed at a regional level. The dates used to split the fish ticket data for each region and crab year were as follows:
 
-![table-season-dates]()
+![table-season-dates](https://github.com/mfisher5/ParticipationNetworks/blob/master/doc/img/table_split_crab_year.png?raw=true)
 
 <br>
 
@@ -39,7 +39,7 @@ The position of the fisheries from left (2015) to right (2016) on the ‘x’ ax
 
 In the example below, you can see that some vessels did not land any commercial fishery catch during the 2016 late season, represented by the directed edge which starts at the Dungeness crab fishery node and ends at the "No Fishing" node.
 
-![early-network]()
+![early-network](https://github.com/mfisher5/ParticipationNetworks/blob/master/doc/img/early_directed_network_example.png?raw=true)
 
 <br>
 
@@ -51,7 +51,7 @@ Since Dungeness crab vessels have more diverse fishery participation in the late
 
 In the first graph of the example below, vessels which only landed Chinook during the 2015 late season instead landed Dungeness crab in the 2016 late season. 
 
-![late-network]()
+![late-network](https://github.com/mfisher5/ParticipationNetworks/blob/master/doc/img/late_directed_network_example.png?raw=true)
 
 
 
