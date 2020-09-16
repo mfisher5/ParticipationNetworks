@@ -12,12 +12,19 @@ We also make use of a specific type of edge called a **self-loop** to represent 
 
 This network structure does make it possible for a single vessel to be present in multiple nodes and edges. 
 
+## Confidentiality
+
+To protect the confidentiality of the data, edges and fishery nodes are only shown when they are composed of three or more vessels. 
+
+When multiple pot-based or hook and line-based fisheries had fewer than three vessels participating, we collapsed the fisheries into a single “Misc. Pot/H&L” node. “Misc. Fisheries” is a similar compilation of fisheries with fewer than three vessels participating, but the included fisheries can be of any gear type.
+
+<br>
 
 ## Weighting and Color
 
 Edges are weighted by the number of vessels undertaking the represented shift in participation. 
 
-Nodes are sized according to the number of vessels which participated in the represented fishery (or "No Fishing", "Other Port" alternatives). These
+Node size is proportional to the number of vessels which participated in the represented fishery (or "No Fishing", "Other Port" alternatives). These sizes are relative within each network, so should not be used to compare absolute vessel counts between networks. Sizes are calculated slightly differently in the early and late season networks (see below). 
 
 The color of each node indicates the gear type used in the fishery (with "No Fishing", "Other Port" alternatives in gray). 
 
@@ -37,6 +44,8 @@ We refer to each commercial fishing season using “crab years,” which span fr
 
 The position of the fisheries from left (2015) to right (2016) on the ‘x’ axis is according to the direction of vessel flow. In the early season, the only fishery which ‘lost’ vessels was the Dungeness crab fishery, and so the Dungeness crab fishery is the only one on the left (2015) side of the graph. 
 
+Node size is proportional to the number of Dungeness crab vessels participating in each fishery or alternative in the given year. The 2015 Dungeness crab fishery node is the maximum size, because all vessels included in the graph participated in the Dungeness crab fishery during the 2015 crab year. 
+
 In the example below, you can see that some vessels did not land any commercial fishery catch during the 2016 late season, represented by the directed edge which starts at the Dungeness crab fishery node and ends at the "No Fishing" node.
 
 ![early-network](https://github.com/mfisher5/ParticipationNetworks/blob/master/doc/img/early_directed_network_example.png?raw=true)
@@ -46,6 +55,8 @@ In the example below, you can see that some vessels did not land any commercial 
 ### Late Season Networks
 
 The position of the fisheries from left (2015) to right (2016) on the ‘x’ axis is according to the direction of vessel flow. Whereas in the early season the only fishery which ‘lost’ vessel participation was the Dungeness crab fishery, in the late season some vessels switched out of a non-Dungeness fishery (positioned left) into the Dungeness crab fishery (positioned right).
+
+Node size is proportional to the number of Dungeness crab vessels participating in each fishery or alternative in the 2016 crab year, regardless of the node location in the plot area. 
 
 Since Dungeness crab vessels have more diverse fishery participation in the late season, there will be a lot more self-loops in these graphs. 
 
