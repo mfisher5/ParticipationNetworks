@@ -5,11 +5,25 @@ Confidential landings and registration data obtained through [PacFIN](http://pac
 
 ### Pulling Fish Ticket Data
 
-We used the following code to download fish tickets from the PacFIN database: 
+We used the following SQL code to download California Department of Fish and Wildlife data from the PacFIN comprehensive fish tickets database:
+
+```
+select *
+FROM pacfin_marts.comprehensive_ft cft
+where cft.pacfin_year between 2008 AND 2018
+and cft.agency_code = 'C'
+```
 
 
 
 ### Pulling Vessel Registration Data
 
-We used the following code to download vessel registration data from the PacFIN database: 
+We used the following SQL code to download California Department of Fish and Wildlife data from the PacFIN vessel registration database:
+
+```
+select *
+FROM pacfin_foundation.vessel_registrations vr
+where vr.REGISTRATION_YEAR between 2008 AND 2018
+and vr.agency_code = 'C' 
+```
 
