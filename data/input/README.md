@@ -9,24 +9,24 @@ Most input data is derived from confidential landings and registration data obta
 The following files contain fishing season and port group information that is used to conduct analysis and generate graphs:
 
 1. *crab_open_dates.txt*: The date that the first port of landing in each California port group opened during the 2016 crab year.
-	*`crab_year` (crab year)
-	* `pcgroup` (3 letter port group code), 
-	*`odate` (season start date, MM/DD/YYYY format)
+	* `crab_year` (crab year)
+	* `pcgroup` (3 letter port group code)
+	* `odate` (season start date, MM/DD/YYYY format)
 
 2. *DCRB_Historic_Closures_CA_updated.csv*: Duration of port group closures in the California Dungeness crab fishery, from the 2007 through 2017 crab years. 
-	a. `y` (crab year)
-	b. `pcgroup` (3 letter port group code)
-	c. `days.closed` (minimum number of days any port of landing within the given port group was delayed from the codified start date)
+	* `y` (crab year)
+	* `pcgroup` (3 letter port group code)
+	* `days.closed` (minimum number of days any port of landing within the given port group was delayed from the codified start date)
 
 3. *pcgroup_mean_coordinates.csv*: Coordinates and Dungeness crab fishery betweenness centrality for California port groups. 
-	a. `port_group`(3 letter port group code)
-	b. `Lon` (longitude)
-	c. `Lat` (latitude)
-	d. `port_group_name` (full name of port group)
-	e. `Lon_label` (longitude for label)
-	f. `Lat_label` (latitude for label)
-	g. `dcrb_between` (betweenness centrality of the Dungeness crab fishery)
-	h. `region` (region to which the port group belongs, based on clustering analysis of undirected participation networks)
+	* `port_group`(3 letter port group code)
+	* `Lon` (longitude)
+	* `Lat` (latitude)
+	* `port_group_name` (full name of port group)
+	* `Lon_label` (longitude for label)
+	* `Lat_label` (latitude for label)
+	* `dcrb_between` (betweenness centrality of the Dungeness crab fishery)
+	* `region` (region to which the port group belongs, based on clustering analysis of undirected participation networks)
 
 <br>
 
