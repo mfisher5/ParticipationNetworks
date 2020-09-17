@@ -8,10 +8,10 @@ Most input data is derived from confidential landings and registration data obta
 
 The following files contain fishing season and port group information that is used to conduct analysis and generate graphs:
 
-1. *crab_open_dates.txt*: The date that the first port of landing in each California port group opened during the 2016 crab year. 
-	a. `crab_year` (crab year), 
-	b. `pcgroup` (3 letter port group code), 
-	c. `odate` (season start date, MM/DD/YYYY format)
+1. *crab_open_dates.txt*: The date that the first port of landing in each California port group opened during the 2016 crab year.
+	*`crab_year` (crab year)
+	* `pcgroup` (3 letter port group code), 
+	*`odate` (season start date, MM/DD/YYYY format)
 
 2. *DCRB_Historic_Closures_CA_updated.csv*: Duration of port group closures in the California Dungeness crab fishery, from the 2007 through 2017 crab years. 
 	a. `y` (crab year)
