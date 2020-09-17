@@ -32,23 +32,19 @@ We have provided the network metrics data used for Fisher et al. (in revision) i
 
 Equations for the network metrics used for final analyses in Fisher et al. (in revision) are also available in the Supplementary Material. 
 
-**Edge Density** = 
-![ed_expression](https://github.com/mfisher5/ParticipationNetworks/blob/master/doc/img/ED_equation.png?raw=true)
+![ed](https://github.com/mfisher5/ParticipationNetworks/blob/master/doc/img/ED_equation.png?raw=true)
 
 <br>
 
-**Mean Degree** = 
-![md_expression](https://github.com/mfisher5/ParticipationNetworks/blob/master/doc/img/MD_expression.png?raw=true)
+![md](https://github.com/mfisher5/ParticipationNetworks/blob/master/doc/img/MD_equation.png?raw=true)
 
 <br>
 
-**Weighted Network Centralization**=
-![nc_expression](https://github.com/mfisher5/ParticipationNetworks/blob/master/doc/img/NC_weighted_expression.png?raw=true)
+![nc_weighted](https://github.com/mfisher5/ParticipationNetworks/blob/master/doc/img/NC_weighted_equation.png?raw=true)
 
 <br>
 
-**Weighted Modularity**= 
-![m_expression](https://github.com/mfisher5/ParticipationNetworks/blob/master/doc/img/M_weighted_expression.png?raw=true)
+![m_weighted](https://github.com/mfisher5/ParticipationNetworks/blob/master/doc/img/M_weighted_equation.png?raw=true)
 
 <br>
 
