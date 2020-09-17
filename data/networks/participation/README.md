@@ -1,3 +1,7 @@
-## Fisheries Participation Networks Data
+## Data: Fisheries Participation Networks
 
-Adjacency matrices (.csv), graph objects (.rds), and graphs (.png) for fisheries participation networks.
+Undirected participation networks provide a snapshot of cross-fishery participation by a group of fishing vessels.
+
+Adjacency matrices, the data used to build network objects, should be saved as `.csv` files. The `igraph` network objects, which include network structure and additional information for nodes and edges (i.e. weights, colors) are saved as `.rds`.
+
+Files are named using the following template: `...'

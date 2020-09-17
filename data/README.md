@@ -2,7 +2,7 @@
 
 Data (primarily as .csv files) and R objects. The directory structure is as follows:
 
-**input**: pre-processed fish ticket data and vessel length data for identifying metiers and building networks
+**input**: pre-processed fish ticket data and vessel length data for identifying metiers and building networks, along with ancillary data on crab seasons and port groups
 
 **intermediate_metiers**: intermediate data files saved during `infomap` and k-nearest neighbor (KNN) processes
 

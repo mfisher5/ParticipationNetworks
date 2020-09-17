@@ -25,21 +25,23 @@ To rerun the entire analysis, use the ordered .Rmd scripts in the **scripts** fo
 
 ### Data
 
-Raw landings and registration data is not included for confidentiality, and its use in Fisher et al. (in revisions) is protected under a non-disclosure agreement. However, these data can be acquired by direct request from the California Department of Fish and Wildlife. We have provided the SQL code to download raw data from the PacFIN database in the [data/raw](https://github.com/mfisher5/ParticipationNetworks/tree/master/data/raw) folder.
+Raw landings and registration data are not included for confidentiality, and its use in Fisher et al. (in revision) is protected under a non-disclosure agreement. However, these data can be acquired by direct request from the California Department of Fish and Wildlife. We have provided the SQL code to download raw data from the PacFIN database in the [data/raw](https://github.com/mfisher5/ParticipationNetworks/tree/master/data/raw) folder.
 
 We have provided the following aggregated, non-confidential data:
 1. Adjacency matrices and *igraph* objects for undirected fisheries participation networks (**data** directory)
 2. Adjacency matrices and *igraph* objects for directed participation networks (**data** directory)
-3. Network metrics (node- and network-level) calculated from undirected fisheries participation networks, used to run generalized linear models (**results** directory)
+3. Network metrics calculated for Fisher et al. (in revision), used to run generalized linear models (**results** directory)
 
 <br>
 
 We have also provided the following ancillary data in the **data** directory:
 
-1. Duration of district closures in the California Dungeness crab fishery, from the 2007 through 2017 crab years
-2. The date that the first port of landing opened during the 2016 crab year, for each port group in California.
+1. Duration of port group closures in the California Dungeness crab fishery, from the 2007 through 2017 crab years
+2. The date that the first port of landing in each California port group opened during the 2016 crab year
 3. Coordinates and Dungeness crab fishery betweenness centrality for California port groups
 
+<br>
+<br>
 
 
 
