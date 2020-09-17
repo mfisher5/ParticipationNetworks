@@ -12,5 +12,5 @@ Data (primarily as .csv files) and R objects. The directory structure is as foll
 
 ---
 
-Some data (primarily raw and input data) includes non-aggregated, confidential information on individual vessels, and so cannot be publicly provided here. Information on fishery landings data from the California Department of Fish and Wildlife, including data sharing request forms, can be found on their [website](https://wildlife.ca.gov/Conservation/Marine/MFSU#48329363-overview--background).
+Some data (primarily raw and input data) includes non-aggregated, confidential information on individual vessels, and so cannot be publicly provided here. Information on confidential fishery landings data collected and stored by the California Department of Fish and Wildlife, including data sharing request forms, can be found on their [website](https://wildlife.ca.gov/Conservation/Marine/MFSU#48329363-overview--background).
 
