@@ -28,21 +28,15 @@ We have provided the network metrics data used for Fisher et al. (in revision) i
 
 <br>
 
-#### Metric Definitions
+### Metric Definitions
 
 Equations for the network metrics used for final analyses in Fisher et al. (in revision) are also available in the Supplementary Material. 
 
 ![ed](https://github.com/mfisher5/ParticipationNetworks/blob/master/doc/img/ED_equation.png?raw=true)
 
-<br>
-
 ![md](https://github.com/mfisher5/ParticipationNetworks/blob/master/doc/img/MD_equation.png?raw=true)
 
-<br>
-
 ![nc_weighted](https://github.com/mfisher5/ParticipationNetworks/blob/master/doc/img/NC_weighted_equation.png?raw=true)
-
-<br>
 
 ![m_weighted](https://github.com/mfisher5/ParticipationNetworks/blob/master/doc/img/M_weighted_equation.png?raw=true)
 
