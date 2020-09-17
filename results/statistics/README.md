@@ -26,15 +26,17 @@ We have provided the network metrics data used for Fisher et al. (in revision) i
 21. `m_weighted` (weighted modularity)
 22. `beta_eff` (beta efficiency)
 
+<br>
+
 Equations for the network metrics used for final analyses in Fisher et al. (in revision), also available in Supplementary Material: 
 
-**Edge Density** = ![ed_expression]()
+**Edge Density** = ![ed_expression](https://github.com/mfisher5/ParticipationNetworks/blob/master/doc/img/ED_equation.png?raw=true)
 
-**Mean Degree** = ![md_expression]()
+**Mean Degree** = ![md_expression](https://github.com/mfisher5/ParticipationNetworks/blob/master/doc/img/MD_expression.png?raw=true)
 
-**Weighted Network Centralization**: ![nc_expression]()
+**Weighted Network Centralization**: ![nc_expression](https://github.com/mfisher5/ParticipationNetworks/blob/master/doc/img/NC_weighted_expression.png?raw=true)
 
-**Weighted Modularity**: ![m_expression]()
+**Weighted Modularity**: ![m_expression](https://github.com/mfisher5/ParticipationNetworks/blob/master/doc/img/M_weighted_expression.png?raw=true)
 
 Variables:
 * m: number of edges
