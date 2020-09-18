@@ -2,9 +2,6 @@
 
 These materials use fishery landings data to generate and analyze fisheries participation networks, as in Fisher et al. (in revision). This repository builds on R code originally produced for [Fuller et al. (2017)](https://doi.org/10.1093/icesjms/fsx128).
 
-![ca-networks-img](https://github.com/mfisher5/ParticipationNetworks/blob/master/results/figures/fig1/example_network.png?raw=true)
-
----
 
 The directory structure follows Wilson et al. (2017) *Good enough practices in scientific computing*. 
 
@@ -13,6 +10,8 @@ The directory structure follows Wilson et al. (2017) *Good enough practices in s
 - Documentation, including detailed descriptions of directed and undirected network structure, is in **doc**
 - Raw, processed, and intermediate data files are saved in **data**
 - Results (figures / tables, final network metrics) will be saved into  **results**
+
+---
 
 <br>
 
@@ -23,16 +22,15 @@ The directory structure follows Wilson et al. (2017) *Good enough practices in s
 
 **Undirected fisheries participation networks** quantify patterns of resource use in commercial fishing communities by quantifying cross-fishery participation by commercial fishing vessels. The nodes of the network are fisheries, and the edges represent shared vessel participation. 
 
-
 **Directed participation networks** provide a detailed description of spillover, or how a subset of vessels changed participation from one fishing season to the next. The nodes of the network are fisheries, and the edges show the flow of vessels out of fisheries from season 1 into fisheries from season 2.
 
 Guides to each network type, including their construction and interpretation, are provided in the *doc* directory.
 
 <br>
 
-**Fisheries** were defined with a data-driven approach. Individual PacFIN fish tickets, representing daily landings from individual vessels, were grouped based on gear type, species composition of catch, and ex-vessel revenue with a métier analysis modified from Fuller et al. (2017).  This analysis uses the `infomap` algorithm (Rosvall & Berstrom 2008) supplemented with the k-nearest neighbor algorithm.
+#### Definitions
 
-<br>
+**Fisheries** were defined with a data-driven approach. Individual PacFIN fish tickets, representing daily landings from individual vessels, were grouped based on gear type, species composition of catch, and ex-vessel revenue with a métier analysis modified from Fuller et al. (2017).  This analysis uses the `infomap` algorithm (Rosvall & Berstrom 2008) supplemented with the k-nearest neighbor algorithm.
 
 **Fishing seasons** for Dungeness crab span two calendar years, and so this analysis uses "crab years;" each crab year spans from November of year 1 through October of year 2. For example, the 2016 crab year represents the 2015-16 fishing season, which begins in November of 2015. 
 
@@ -63,9 +61,9 @@ We have also provided the following ancillary data in the **data** directory:
 To rerun the entire analysis, use the ordered .Rmd scripts in the **scripts** folder.
 
 1. Fork and clone the repository
-2. Copy raw fish ticket and vessel registration data downloaded from PacFIN into the *data/raw* directory. This folder is already included in the `.gitignore` file. 
-3. Run the scripts in order (details provided in the *scripts* directory README). We suggest that you check and update the `.gitignore` file after every script, to avoid accidentally publishing data containing confidential information.
-4. Use the scripts in the *scripts/figures* folder to recreate the figures in Fisher et al. (in revision) 
+2. Copy raw fish ticket and vessel registration data downloaded from PacFIN into the **data/raw** directory. This folder is already included in the `.gitignore` file. 
+3. Run the scripts in order (details provided in the **scripts** directory README). We suggest that you check and update the `.gitignore` file after every script, to avoid accidentally publishing data containing confidential information.
+4. Use the scripts in the **scripts/figures** folder to recreate the figures in Fisher et al. (in revision) 
 
 <br>
 
@@ -77,11 +75,14 @@ You can also use the provided network metrics data file to run the generalized l
 
 <br>
 
-The scripts *Fig3.R* and *FigS5.R* will generate the directed participation networks using the provided `graph` objects in the *data/networks/vessel_flow* folder.
+The scripts *Fig3.R* and *FigS5.R* will generate the directed participation networks using the provided `graph` objects in the **data/networks/vessel_flow** folder.
 <br>
 <br>
 <br>
 <br>
+
+
+![ca-networks-img](https://github.com/mfisher5/ParticipationNetworks/blob/master/results/figures/fig1/example_network.png?raw=true)
 
 ---
 
