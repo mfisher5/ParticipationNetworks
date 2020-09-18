@@ -28,11 +28,11 @@ Guides to each network type, including their construction and interpretation, ar
 
 <br>
 
-#### Definitions
+#### Some Definitions
 
-**Fisheries** were defined with a data-driven approach. Individual PacFIN fish tickets, representing daily landings from individual vessels, were grouped based on gear type, species composition of catch, and ex-vessel revenue with a métier analysis modified from Fuller et al. (2017).  This analysis uses the `infomap` algorithm (Rosvall & Berstrom 2008) supplemented with the k-nearest neighbor algorithm.
+Fisheries were defined with a data-driven approach. Individual PacFIN fish tickets, representing daily landings from individual vessels, were grouped based on gear type, species composition of catch, and ex-vessel revenue with a métier analysis modified from Fuller et al. (2017).  This analysis uses the `infomap` algorithm (Rosvall & Berstrom 2008) supplemented with the k-nearest neighbor algorithm.
 
-**Fishing seasons** for Dungeness crab span two calendar years, and so this analysis uses "crab years;" each crab year spans from November of year 1 through October of year 2. For example, the 2016 crab year represents the 2015-16 fishing season, which begins in November of 2015. 
+Fishing seasons for Dungeness crab span two calendar years, and so this analysis uses "crab years;" each crab year spans from November of year 1 through October of year 2. For example, the 2016 crab year represents the 2015-16 fishing season, which begins in November of 2015. 
 
 <br>
 
@@ -41,8 +41,8 @@ Guides to each network type, including their construction and interpretation, ar
 Raw landings and registration data are not included for confidentiality, and its use in Fisher et al. (in revision) is protected under a non-disclosure agreement. However, these data can be acquired by direct request from the California Department of Fish and Wildlife. We have provided the SQL code to download raw data from the PacFIN database in the [*data/raw*](https://github.com/mfisher5/ParticipationNetworks/tree/master/data/raw) folder.
 
 We have provided the following aggregated, non-confidential data:
-1. Adjacency matrices and *igraph* objects for undirected fisheries participation networks (**data** directory)
-2. Adjacency matrices and *igraph* objects for directed participation networks (**data** directory)
+1. Adjacency matrices and `graph` objects for undirected fisheries participation networks (**data** directory)
+2. Adjacency matrices and `graph` objects for directed participation networks (**data** directory)
 3. Network metrics calculated for Fisher et al. (in revision), used to run generalized linear models (**results** directory)
 
 <br>
@@ -60,18 +60,18 @@ We have also provided the following ancillary data in the **data** directory:
 
 To rerun the entire analysis, use the ordered .Rmd scripts in the **scripts** folder.
 
-1. Fork and clone the repository
+1. Fork and clone the repository.
 2. Copy raw fish ticket and vessel registration data downloaded from PacFIN into the **data/raw** directory. This folder is already included in the `.gitignore` file. 
 3. Run the scripts in order (details provided in the **scripts** directory README). We suggest that you check and update the `.gitignore` file after every script, to avoid accidentally publishing data containing confidential information.
-4. Use the scripts in the **scripts/figures** folder to recreate the figures in Fisher et al. (in revision) 
+4. Use the scripts in the **scripts/figures** folder to recreate the figures in Fisher et al. (in revision).
 
 <br>
 
 To replicate the output from the generalized linear models using the provided network data:
-1. Run Section 3 of script *06_create_seasonal_networks.Rmd*
-2. Run scripts *07_explore_network_stats.Rmd* and *08_nested_GLMs*. You may have to update the name of the file containing the network metrics.
+1. Run Section 3 of script *06_create_seasonal_networks.Rmd*.
+2. Run scripts *07_explore_network_stats.Rmd* and *08_nested_GLMs*. You may have to update the name of the file containing the network metrics data.
 
-You can also use the provided network metrics data file to run the generalized linear models, by skipping to script *08_nested_GLMs*.
+You can also use the provided network metrics data file to run the generalized linear models, by skipping to script *08_nested_GLMs.Rmd*.
 
 <br>
 
