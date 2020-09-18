@@ -20,13 +20,11 @@ The directory structure follows Wilson et al. (2017) *Good enough practices in s
 > Climate shocks can reorganize the social-ecological linkages in food-producing communities, leading to a sudden loss of key products in food systems. The extent and persistence of this reorganization is difficult to observe and summarize, but is a critical aspect of predicting and rapidly assessing community vulnerability to extreme events. We apply network analysis to evaluate the impact of a climate shock – an unprecedented marine heatwave – with respect to patterns of resource use in California fishing communities, which were severely affected through closures of the Dungeness crab fishery. The climate shock significantly modified flows of users between fishery resources during the closures. These modifications were predicted by pre-shock patterns of resource use, and were associated with three strategies employed by community members, or vessels, to respond to the closures: temporary exit from the food system, spillover of effort from the Dungeness crab fishery into other fisheries, and spatial shifts in where fish were landed. Regional differences in resource use patterns and individual responses highlighted the Dungeness crab fishery as a seasonal “gilded trap” for northern California communities. We also detected disparities in individual response based on vessel size, with larger vessels more likely to display spatial mobility. Our study leverages network theory to demonstrate the importance of highly connected and decentralized networks of resource use in reducing the vulnerability of human communities to climate shocks. 
 
 
-**Undirected fisheries participation networks** quantify patterns of resource use in commercial fishing communities by quantifying cross-fishery participation by commercial fishing vessels. The nodes of the network are fisheries, and the edges represent shared vessel participation. 
+**Undirected fisheries participation networks** summarize patterns of resource use in commercial fishing communities by quantifying cross-fishery participation by commercial fishing vessels. The nodes of the network are fisheries, and the edges represent shared vessel participation. 
 
 **Directed participation networks** provide a detailed description of spillover, or how a subset of vessels changed participation from one fishing season to the next. The nodes of the network are fisheries, and the edges show the flow of vessels out of fisheries from season 1 into fisheries from season 2.
 
 Guides to each network type, including their construction and interpretation, are provided in the *doc* directory.
-
-<br>
 
 #### Some Definitions
 
@@ -56,7 +54,7 @@ We have also provided the following ancillary data in the **data** directory:
 <br>
 <br>
 
-### Reproducing Results
+### Run the Analysis
 
 To rerun the entire analysis, use the ordered .Rmd scripts in the **scripts** folder.
 
