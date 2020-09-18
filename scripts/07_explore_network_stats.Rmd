@@ -70,13 +70,13 @@ pngdir <- 'results/figures'
 
 What is the name of the `.csv` file with the network statistics from script 06?
 ```{r}
-filename <- "2007_2016_CA_CrabPorts_2015HAB_NoSubgraph_rmCrab_01contribution.csv"
+filename <- "2008_2017_CA_ParticipationNetworkMetrics.csv"
 ```
 <br>
 
 Specify which network statistics to retain from the full data set.
 ```{r}
-myvars = c("mean_deg","ed","nc","nc_weighted","m","m_weighted")
+myvars <- c("mean_deg","ed","nc","nc_weighted","m","m_weighted")
 ```
 <br>
 

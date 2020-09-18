@@ -1,6 +1,11 @@
 .Rproj.user
 data/**/*.csv
 data/**/*.png
+data/raw/*
+data/input/*.csv
+data/input/length/*.csv
+data/input/metiers/*.csv
+data/intermediate_metiers/reference/*.csv
 results/statistics/*SPEARMAN.csv
 results/statistics/2007_2016*.csv
 !data/input/pcgroup_mean_coordinates.csv

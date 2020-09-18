@@ -21,6 +21,8 @@ fontsize: 11pt
 
 Creates a seasonal fisheries particiation network (igraph object) for each port group, for every crab year. Then calculates summary statistics for each network.
 
+Section 3 allows you to calculate network metrics from existing igraph objects. Set Section 2 code chunks to `eval=FALSE` and Section 3 code chunks to `eval=TRUE` to run Section 3. 
+
 
 <br>
 ```{r "setup", include=FALSE}
@@ -153,7 +155,7 @@ For each crab year and port group, this code will:
 4. Calculate network-level statistics, and save to an output data frame.
 
 
-```{r}
+```{r eval=TRUE}
 for(y in years){
   for(p in myports){
     cat(p, "\n")
@@ -261,19 +263,104 @@ for(y in years){
 <br>
 
 Check the network stats data frame
-```{r}
+```{r eval=TRUE}
 head(mystats)
 ```
 <br>
 
+
 Write stats out to file. 2008_2015_CA_CrabPorts_NoSubgraph_01contribution.csv
-```{r}
+```{r eval=TRUE}
 filename <- paste0("NetworkStats_", min(years), "_", max(years), "_", length(myports), "pcgroups_", ifelse(rm_crab, 'rmCrab_','_'), contr_cutoff*100, "pContribution.csv")
 
 write.csv(mystats,here::here(statdir, filename), row.names=FALSE)
 ```
 <br>
 
+
+# 3: Seasonal Participation Network Statistics
+
+If you have already produced a `graph` object for each fisheries participation network, this section of the script will read in those objects and calculate network-level statistics
+
+```{r eval=FALSE}
+for(y in years){
+  for(p in myports){
+    cat(p, "\n")
+    
+    ##### EARLY SEASON ####
+    
+    # Read in igraph object
+    rds_name <- ifelse(rm_crab,  paste0("igraph_", p, "_", y, "_early_rmCrab.rds"),  paste0("igraph_", p, "_", y, "_early.rds"))
+    ## (if the object exists)
+    if(file_test("-f", here::here(outdir, rds_name))){
+      early_g <- readRDS(here::here(outdir, rds_name))
+      
+      # Calculate network-level statistics
+      ## using the `net_stats` function
+      early_stats <- net_stats(early_g, y = y, stats="network")
+      ## add on period (closure/open) and port group info
+      early_stats <- early_stats %>%
+        mutate(period = rep("early", times=dim(early_stats)[1])) %>%
+        mutate(pcgroup = rep(p, times=dim(early_stats)[1]))
+      ## save
+      tmp_stats <- early_stats
+    } else{message("Warning: Could not find early season network for ",p,", ", y, "\n")}
+    
+    
+    ##### LATE SEASON ####
+    
+    # Read in igraph object
+    rds_name <- ifelse(rm_crab,  paste0("igraph_", p, "_", y, "_late_rmCrab.rds"),  paste0("igraph_", p, "_", y, "_late.rds"))
+    ## (if the object exists)
+    if(file_test("-f", here::here(outdir, rds_name))){
+      late_g <- readRDS(here::here(outdir, rds_name))
+      
+      # Calculate network-level statistics
+      ## using the `net_stats` function
+      late_stats <- net_stats(late_g, y = y, stats="network")
+      ## add on period (closure/open) and port group info
+      late_stats <- late_stats %>%
+        mutate(period = rep("late", times=length(y))) %>%
+        mutate(pcgroup = rep(p, times=length(y)))
+    }
+    
+    #### SAVE NETWORK STATS OUTPUT ####
+    ## merge data from early / late season
+    if(!exists('early_stats')){
+      tmp_stats <- late_stats
+      rm(late_stats)
+    } else{
+      tmp_stats <- rbind(early_stats, late_stats)
+      rm(early_stats, late_stats)
+    }
+    
+    ## append to network stats output data frame
+    if(exists('mystats')){
+      mystats <- rbind(mystats, tmp_stats)
+    } else{
+      mystats <- tmp_stats
+    }
+    
+  } #end (p in myports)
+  cat("\nfinished with all port groups in crab year ", y, "\n-----\n")
+} #end (y in years)
+```
+<br>
+
+Check the network stats data frame
+```{r eval=FALSE}
+head(mystats)
+```
+<br>
+
+
+Write stats out to file. 2008_2015_CA_CrabPorts_NoSubgraph_01contribution.csv
+```{r eval=FALSE}
+filename <- paste0("NetworkStats_", min(years), "_", max(years), "_", length(myports), "pcgroups_", ifelse(rm_crab, 'rmCrab_','_'), contr_cutoff*100, "pContribution.csv")
+
+write.csv(mystats,here::here(statdir, filename), row.names=FALSE)
+```
+<br>
 
 ---
 

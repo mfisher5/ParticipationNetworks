@@ -1,6 +1,6 @@
 ## Scripts
 
-Conduct the network analyses from Fisher et al. (in prep) using these RMarkdown scripts. They are ordered by step in the analysis, and will source functions from the `R` directory. Landings data are organized by fish ticket, and metiers identified within each port group. 
+Conduct the network analyses from Fisher et al. (in prep) using these RMarkdown scripts. They are ordered by step in the analysis, and will source functions from the `R` directory. Landings data are organized by fish ticket, and metiers identified within each port group. Where possible, `.html` files are provided as examples.
 
 
 (0. process the raw landings data from PacFIN)
