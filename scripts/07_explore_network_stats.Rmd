@@ -48,7 +48,7 @@ This script requires the following packages.
 if(!require("tidyverse")) {install.packages("tidyverse")}
 if(!require("foreign")) {install.packages("foreign")}
 if(!require("plotrix")) {install.packages("plotrix")}
-if(!require("facetscales")) {install.packages("facetscales")}
+if(!require("facetscales")) {devtools::install_github("zeehio/facetscales"); library(facetscales)}
 if(!require("ggplot2")) {install.packages("ggplot2")}
 if(!require("grid")) {install.packages("grid")}
 if(!require("gridExtra")) {install.packages("gridExtra")}
@@ -288,7 +288,7 @@ scales_y <- list(
   `Modularity\n (UnW)` = scale_y_continuous(limits=c(-0.5,0.3))
 )
 ```
-
+<br>
 
 plot
 ```{r}
@@ -317,6 +317,111 @@ Save
 png(here::here(pngdir, "FigureS3.png"),
     width = 4, height = 8, units = 'in', res = 300)
 myplot1
+dev.off()
+```
+<br>
+
+
+## 3.2. Figure S4
+
+Match the closure duration data with the network metrics data. Then categorize the closure duration, into no closure (0 days; "none"), a mid-duration closure (< 50 days; "medium"), and a high duration closure (> 50 days; "high").
+```{r}
+stats_expand <- left_join(stats, delays, by=c("y","pcgroup")) %>%
+  mutate(closure.duration = ifelse(days.closed == 0, "none",
+                                   ifelse(days.closed < 50, "medium", "high")))
+```
+<br>
+
+
+Averages of each metric across closure duration (none / medium / high) between 2008 and 2017 crab years.
+```{r}
+duration_avg <- stats_expand %>%
+  pivot_longer(cols=colnames(stats)[which(!(colnames(stats) %in% c("y","period","pcgroup","R")))]) %>%
+  filter(name != "N") %>%
+  group_by(period,R,name, closure.duration) %>%
+  summarise(avg=mean(value,na.rm=TRUE),sdev=std.error(value,na.rm=TRUE))
+
+
+duration_avg$name <- as.character(duration_avg$name)
+duration_avg$name[which(duration_avg$name=="ed")] <- "Edge Density"
+duration_avg$name[which(duration_avg$name=="mean_deg")] <- "Mean Degree"
+duration_avg$name[which(duration_avg$name=="nc")] <- "Centralization\n (UnW)"
+duration_avg$name[which(duration_avg$name=="nc_weighted")] <- "Centralization"
+duration_avg$name[which(duration_avg$name=="m")] <- "Modularity\n (UnW)"
+duration_avg$name[which(duration_avg$name=="m_weighted")] <- "Modularity"
+duration_avg$name <- factor(duration_avg$name, levels=c("Edge Density","Mean Degree","Centralization","Centralization\n (UnW)",
+                                                                    "Modularity", "Modularity\n (UnW)"))
+duration_avg$period <- recode(duration_avg$period, closure="early",open="late")
+duration_avg$R <- recode(duration_avg$R, central="Central",north="North")
+duration_avg$closure.duration <- factor(duration_avg$closure.duration, levels=c("none","medium","high"))
+```
+<br>
+
+Set the limits and breaks for the y axis.
+```{r}
+scales_y <- list(
+  `Edge Density` = scale_y_continuous(limits = c(0.2,0.7)),
+  `Mean Degree` = scale_y_continuous(limits = c(0,6)),
+  `Centralization` = scale_y_continuous(limits = c(0.2,0.6),breaks=seq(0.2,0.6,by=0.2)),
+  `Centralization\n (UnW)` = scale_y_continuous(limits=c(0.1,0.9), breaks=seq(0.1,0.9,by=0.2)),
+  `Modularity` = scale_y_continuous(limits=c(-0.4,0.6),breaks=seq(-0.4,0.6,by=0.2)),
+  `Modularity\n (UnW)` = scale_y_continuous(limits=c(-0.4,0.2))
+)
+```
+<br>
+
+plot the early season
+```{r}
+myplot.e <- ggplot(data=filter(duration_avg, period=="early"), aes(x=closure.duration,y=avg)) +
+  geom_point(aes(col=R),size=2) +
+  geom_path(aes(col=R,group=R),size=0.5) +
+  geom_errorbar(aes(ymin=avg-sdev,ymax=avg+sdev,col=R,group=R), width=0.2) +
+  facet_grid_sc(rows = vars(name), scales=list(y = scales_y)) +
+  scale_color_manual(values=c("dodgerblue3","aquamarine4"), name="") +
+  ylab("") +
+  xlab("Closure Duration") +
+  theme_classic() +
+  theme(axis.text.x=element_text(size=14,angle=90,hjust=1,vjust=0.5),
+        axis.text.y=element_text(size=14,vjust=0.6),
+        axis.title=element_text(size=16),
+        strip.text=element_blank(),
+        legend.position="none",
+        panel.border = element_rect(colour = "black", fill=NA, size=0.25),
+        axis.line=element_blank())
+myplot.e
+```
+<br>
+
+plot the late season
+```{r}
+myplot.l <- ggplot(data=filter(duration_avg, period=="late"), aes(x=closure.duration,y=avg)) +
+  geom_point(aes(col=R),size=2) +
+  geom_path(aes(col=R,group=R),size=0.5) +
+  geom_errorbar(aes(ymin=avg-sdev,ymax=avg+sdev,col=R,group=R), width=0.2) +
+  facet_grid_sc(rows = vars(name), scales=list(y = scales_y)) +
+  scale_color_manual(values=c("dodgerblue3","aquamarine4"), name="Region") +
+  ylab("") +
+  xlab("Closure Duration") +
+  theme_classic() +
+  theme(axis.text.x=element_text(size=14,angle=90,hjust=1,vjust=0.5),
+        axis.text.y=element_blank(),
+        axis.title.x=element_text(size=16),
+        axis.title.y=element_blank(),
+        strip.text=element_text(size=13.5),
+        strip.background = element_rect(fill="grey88"),
+        legend.text=element_text(size=14),
+        legend.title=element_text(size=14),
+        panel.border = element_rect(colour = "black", fill=NA, size=0.25),
+        axis.line=element_blank())
+myplot.l
+```
+<br>
+
+Save figure
+```{r}
+png(here::here(pngdir,'FigureS4.png'),
+    width = 7, height = 9, units = 'in', res = 300)
+plot_grid(myplot.e,myplot.l,rel_widths = c(0.8,1), labels=c("(a)","(b)"))
 dev.off()
 ```
 <br>
