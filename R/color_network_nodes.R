@@ -1,7 +1,8 @@
 #' Color Network Nodes
 #'
 #' Use the gear type and species ID to assign a color to
-#' each node (vertex) in the network.
+#' each node (vertex) in the network. Meant for both 
+#' directed and undirected network plotting functions.
 #'
 #' @param g network as an igraph object
 #' @return character vector with colors for each node, ordered

@@ -36,7 +36,7 @@ knitr::opts_chunk$set(root.dir=here::here(),echo = TRUE)
 Read in
 ```{r}
 # Network stats
-data <- read.csv(here::here("output/network_stats/split_year","2007_2016_CA_CrabPorts_2015HAB_NoSubgraph_rmCrab_01contribution.csv"))
+data <- read.csv(here::here("results/statistics","2007_2016_CA_CrabPorts_2015HAB_NoSubgraph_rmCrab_01contribution.csv"))
 colnames(data)
 
 data <- data %>% dplyr::select(y, nc, nc_weighted, ed, mean_deg,m, m_weighted, N, period, pcgroup) %>%
@@ -45,10 +45,9 @@ data <- data %>% dplyr::select(y, nc, nc_weighted, ed, mean_deg,m, m_weighted, N
 data$R <- factor(data$R, levels=c("North","Central"))
 
 # Closure Duration
-closure_data <- read.csv(here::here("input_data/DCRB_Historic_Closures_CA_updated.csv"))
+closure_data <- read.csv(here::here("data/input","DCRB_Historic_Closures_CA_updated.csv"))
 closure_data <- closure_data %>%
-  mutate(D = ifelse(days.closed == 0, "none", ifelse(days.closed <= 14, "low",
-                                                     ifelse(days.closed < 50, "medium", "high"))))
+  mutate(D = ifelse(days.closed == 0, "none", ifelse(days.closed < 50, "medium", "high")))
 ```
 <br>
 
@@ -56,7 +55,7 @@ Combine stats / closure data
 ```{r}
 data <- left_join(data, closure_data, by=c("y", "pcgroup"))
 data$D <- as.factor(data$D)
-data$D <- factor(data$D, levels=c("none", "low", "medium", "high"))
+data$D <- factor(data$D, levels=c("none", "medium", "high"))
 ```
 <br>
 
@@ -68,8 +67,8 @@ data$pcgroup <- as.numeric(data$pcgroup)
 
 Split into early and late season
 ```{r}
-edata <- filter(data, period == "closure") # early season
-ldata <- filter(data, period == "open") # late season
+edata <- filter(data, period == "early") # early season
+ldata <- filter(data, period == "late") # late season
 ```
 <br>
 
@@ -194,7 +193,7 @@ dev.off()
 ```
 <br>
 
-*From Gelman 2008: The rescaled coefficients are directly interpretable as changes on the logit scale comparing each input variable at a low value to a high value: for the numeric predictors, this is the mean ±1 standard deviation, and for the indicators, this is each level compared with the mean.*
+*From Gelman 2008: The rescaled coefficients are directly interpretable as changes on the logit scale comparing each input variable at a low value to a high value: for the numeric predictors, this is the mean ?1 standard deviation, and for the indicators, this is each level compared with the mean.*
 
 
 Add in a sample size chart at the bottom
