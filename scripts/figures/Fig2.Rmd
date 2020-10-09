@@ -1,0 +1,307 @@
+---
+title: "Run GLMs with Standardized Regression Predictors"
+author: M. Fisher
+date: Last Run (`r Sys.time()`)
+output: 
+  html_document:
+    toc: true
+---
+
+This script uses the `standardize` function from the `arm` package to standardize the input variables [port group, region, Node count] in the generalized linear models for each network metric / period.
+
+Coefficients of interest (region*duration) from the standardized model are plotted.
+
+--
+
+*From `standardize` documentation: Numeric variables that take on more than two values are each rescaled to have a mean of 0 and a sd of 0.5; Binary variables are rescaled to have a mean of 0 and a difference of 1 between their two categories; Non-numeric variables that take on more than two values are unchanged*
+
+
+```{r setup, include=FALSE}
+library(stargazer)
+library(lmtest)
+library(sandwich)
+library(tidyverse)
+library(arm)
+library(cowplot)
+library(here)
+library(PNWColors)
+library(grid);library(gridExtra)
+
+knitr::opts_chunk$set(root.dir=here::here(),echo = TRUE)
+```
+<br>
+
+### Data
+
+Read in
+```{r}
+# Network stats
+data <- read.csv(here::here("output/network_stats/split_year","2007_2016_CA_CrabPorts_2015HAB_NoSubgraph_rmCrab_01contribution.csv"))
+colnames(data)
+
+data <- data %>% dplyr::select(y, nc, nc_weighted, ed, mean_deg,m, m_weighted, N, period, pcgroup) %>%
+  mutate(R = ifelse(pcgroup %in% c("CCA", "ERA", "BGA","BDA"), "North", "Central"))
+
+data$R <- factor(data$R, levels=c("North","Central"))
+
+# Closure Duration
+closure_data <- read.csv(here::here("input_data/DCRB_Historic_Closures_CA_updated.csv"))
+closure_data <- closure_data %>%
+  mutate(D = ifelse(days.closed == 0, "none", ifelse(days.closed <= 14, "low",
+                                                     ifelse(days.closed < 50, "medium", "high"))))
+```
+<br>
+
+Combine stats / closure data
+```{r}
+data <- left_join(data, closure_data, by=c("y", "pcgroup"))
+data$D <- as.factor(data$D)
+data$D <- factor(data$D, levels=c("none", "low", "medium", "high"))
+```
+<br>
+
+Recode port group names as 1-7
+```{r}
+data$pcgroup <- as.numeric(data$pcgroup)
+```
+<br>
+
+Split into early and late season
+```{r}
+edata <- filter(data, period == "closure") # early season
+ldata <- filter(data, period == "open") # late season
+```
+<br>
+
+### Scale Coefficients
+
+This function extracts coefficient values from the `standardize` function. the input variable "m" is the GLM model object.
+```{r}
+get_sc_coef <- function(m,name,season){
+  display(arm::standardize(m))
+  tmpdat <- as.data.frame(arm::standardize(m)$coefficients)
+  colnames(tmpdat) <- c("coefficients")
+  tmpdat <- mutate(tmpdat, variable=rownames(tmpdat),
+                   metric=name, season=season)
+  return(tmpdat)
+}
+```
+<br>
+
+Run each GLM and grab the coefficients.
+```{r}
+##### Edge Density, with Node predictor #####
+eN.e <- glm(ed ~ D*R + N + pcgroup, data = edata, family = quasibinomial('logit'))
+ei <- get_sc_coef(eN.e, name="Edge Density",season="Early Season")
+
+eN.l <- glm(ed ~ D*R + N + pcgroup, data = ldata, family = quasibinomial('logit'))
+el <- get_sc_coef(eN.l, name="Edge Density",season="Late Season")
+
+##### Weighted Centralization, with Node predictor #####
+ncWN.e <- glm(nc_weighted ~ D*R+N, data = edata, family = quasibinomial('logit'))
+ci <- get_sc_coef(ncWN.e, name="Centralization",season="Early Season")
+
+ncWN.l <- glm(nc_weighted ~ D*R+N+pcgroup, data = ldata, family = quasibinomial('logit'))
+cl <- get_sc_coef(ncWN.l, name="Centralization",season="Late Season")
+
+##### Weighted Modularity, with Node predictor #####
+mWN.e <- glm(m_weighted ~ D*R + N, data = edata, family = gaussian('identity'))
+mi <- get_sc_coef(mWN.e, name="Modularity",season="Early Season")
+
+mWN.l <- glm(m_weighted ~ D*R + N + pcgroup, data = ldata, family = gaussian('identity'))
+ml <- get_sc_coef(mWN.l, name="Modularity",season="Late Season")
+```
+<br>
+
+Combine coefficients across GLMs.
+```{r}
+mydat <- ei %>%
+  bind_rows(el) %>%
+  bind_rows(ci) %>%
+  bind_rows(cl) %>%
+  bind_rows(mi) %>%
+  bind_rows(ml) %>%
+  filter(!is.na(coefficients)) %>%
+  filter(variable != "(Intercept)")
+
+mydat$variable <- as.factor(mydat$variable)
+mydat$variable <- recode(mydat$variable,Dmedium="D (medium)",Dhigh="D (high)",
+                         `c.R`="R (Central)",`z.N`="Size",`z.pcgroup`="Port Group",
+                         `Dhigh:c.R`="D (high) : R (Central)")
+mydat$variable <- factor(mydat$variable, levels=c("D (high) : R (Central)",
+                                                  "D (medium)","D (high)",
+                                                  "R (Central)","Size","Port Group"))
+mydat$metric <- factor(mydat$metric,levels=rev(c("Edge Density","Centralization","Modularity")))
+```
+<br>
+
+
+Add in significance (from stargazer tables, model output)
+```{r}
+sigdf.e <- data.frame(season="Early Season",
+                      metric=c(rep("Edge Density",6),rep("Centralization",6),rep("Modularity",6)),
+                    variable=rep(c("D (high) : R (Central)",
+                                   "D (medium)","D (high)",
+                                   "R (Central)","Size","Port Group"),3),
+                    sig=c("***","","***","","**",NA,
+                          "***","","***","","***",NA,
+                          "","","","","***",NA))
+sigdf.l <- data.frame(season="Late Season",
+                      metric=c(rep("Edge Density",6),rep("Centralization",6),rep("Modularity",6)),
+                    variable=rep(c("D (high) : R (Central)",
+                                   "D (medium)","D (high)",
+                                   "R (Central)","Size","Port Group"),3),
+                    sig=c("","","","","***",NA,
+                          "","","","","*",NA,
+                          "","","","","***",NA))
+sigdf <- rbind(sigdf.e,sigdf.l)
+mydat <- left_join(mydat,sigdf, by=c("variable","metric","season"))
+
+mydat <- mutate(mydat, adj_x=ifelse(coefficients<0,coefficients-0.1,coefficients+0.1))
+mydat$variable <- factor(mydat$variable, levels=c("D (high) : R (Central)",
+                                                  "D (high)","D (medium)",
+                                                  "R (Central)","Size","Port Group"))
+```
+<br>
+
+
+### Plot
+```{r}
+myplot <- ggplot(data=filter(mydat,variable %in% c("D (high) : R (Central)","D (high)", "D (medium)", "R (Central)","Size")),
+                 aes(x=metric ,y=coefficients, fill=metric)) +
+  geom_col() +
+  geom_text(aes(x=metric ,y=adj_x,label=sig,angle=90),size=4) +
+  geom_hline(yintercept=0, color="grey40",lty="longdash") +
+  facet_grid(cols=vars(season),rows=vars(variable), switch="y") +
+  scale_fill_manual(values=rev(pnw_palette(name="Starfish",n=3,type="discrete"))) +
+  xlab("") +
+  ylab("Coefficient") +
+  ylim(c(-2,2.5)) +
+  coord_flip() +
+  theme_bw() +
+  theme(panel.grid.major.y=element_blank(),panel.grid.minor.y=element_blank(),
+        legend.position="none",
+        axis.text.y=element_text(size=14),
+        strip.text=element_text(size=14),
+        axis.title.x=element_text(size=12))
+
+print(myplot)
+
+png(here::here("output/linear_models/CoefStandard_3metrics_barplot_update12-13.png"),height=650,width=480)
+print(myplot)
+dev.off()
+
+```
+<br>
+
+*From Gelman 2008: The rescaled coefficients are directly interpretable as changes on the logit scale comparing each input variable at a low value to a high value: for the numeric predictors, this is the mean ±1 standard deviation, and for the indicators, this is each level compared with the mean.*
+
+
+Add in a sample size chart at the bottom
+```{r}
+n_df <- data.frame(duration=rep(c("High Duration","Mid Duration","No Closures"),2),
+                   region=c(rep("North",3),rep("Central",3)),
+                   n=c(4,9,27,3,0,27)) %>%
+  pivot_wider(names_from=duration,values_from=n)
+n_df <- as.data.frame(n_df)
+rownames(n_df) <- n_df$region; n_df$region <- NULL
+
+tbl1 <- tableGrob(n_df, theme=ttheme_minimal(base_size=11,
+                                              rowhead=list(fg_params=list(fontface="italic")),
+                                             colhead=list(fg_params=list(fontface="italic")),
+                                              core = list(padding=unit(c(-1, 0), "mm"))))
+
+
+myplot <- ggplot(data=filter(mydat,variable %in% c("D (high) : R (Central)","D (high)", "D (medium)", "R (Central)","Size")),
+                 aes(x=metric ,y=coefficients, fill=metric)) +
+  geom_col() +
+  geom_text(aes(x=metric ,y=adj_x,label=sig,angle=90),size=4) +
+  geom_hline(yintercept=0, color="grey40",lty="longdash") +
+  facet_grid(cols=vars(season),rows=vars(variable), switch="y") +
+  scale_fill_manual(values=rev(pnw_palette(name="Starfish",n=3,type="discrete"))) +
+  xlab("") +
+  ylab("Coefficient") +
+  ylim(c(-2,2.5)) +
+  coord_flip() +
+  theme_bw() +
+  theme(panel.grid.major.y=element_blank(),panel.grid.minor.y=element_blank(),
+        legend.position="none",
+        axis.text.y=element_text(size=14),
+        strip.text=element_text(size=14),
+        axis.title.x=element_text(size=12),
+        plot.margin=margin(0.1,0.1,-1,0,unit="cm"))
+
+
+lay <- rbind(c(1,1,1,1),
+             c(1,1,1,1),
+             c(1,1,1,1),
+             c(NA,NA,2,NA))
+grid.arrange(myplot,tbl1, layout_matrix=lay)
+
+
+png(here::here("output/linear_models/CoefStandard_3metrics_barplot_ssize.png"),height=980,width=480)
+grid.arrange(myplot,tbl1, layout_matrix=lay)
+dev.off()
+```
+<br>
+
+
+back-transform the coefficients on the logit scale (centralization, edge density)
+```{r}
+mydat <- mydat %>%
+  mutate(coefficients_scaled = ifelse(metric != "Modularity",
+                                      ifelse(coefficients > 0, invlogit(coefficients),-1*invlogit(coefficients)),coefficients)) %>%
+  mutate(adj_x=ifelse(coefficients_scaled<0,coefficients_scaled-0.1,coefficients_scaled+0.1))
+
+
+## plot
+myplot <- ggplot(data=filter(mydat,variable %in% c("D (high) : Region","D (high)","D (medium)", "Region","Size")),
+                 aes(x=metric ,y=coefficients_scaled, fill=metric)) +
+  geom_col() +
+  geom_text(aes(x=metric ,y=adj_x,label=sig,angle=90),size=4) +
+  geom_hline(yintercept=0, color="grey40",lty="longdash") +
+  facet_grid(cols=vars(season),rows=vars(variable), switch="y") +
+  scale_fill_manual(values=rev(pnw_palette(name="Starfish",n=3,type="discrete"))) +
+  xlab("") +
+  ylab("Coefficient") +
+  ylim(c(-1,1)) +
+  coord_flip() +
+  theme_bw() +
+  theme(panel.grid.major.y=element_blank(),panel.grid.minor.y=element_blank(),
+        legend.position="none",
+        axis.text.y=element_text(size=14),
+        strip.text=element_text(size=14),
+        axis.title.x=element_text(size=12),
+        plot.margin=margin(0.1,0.1,-1,0,unit="cm"))
+
+
+lay <- rbind(c(1,1,1,1),
+             c(1,1,1,1),
+             c(1,1,1,1),
+             c(NA,NA,2,NA))
+grid.arrange(myplot,tbl1, layout_matrix=lay)
+
+
+# png(here::here("output/linear_models/CoefStandard_3metrics_barplot_ssize_logittransf_update12-13.png"),height=820,width=480)
+# grid.arrange(myplot,tbl1, layout_matrix=lay)
+# dev.off()
+```
+<br>
+
+
+How much larger are the D(high) / D(high):Region(S) effects than the size or region effects?
+```{r}
+mydat %>%
+  filter(variable %in% c("D (high) : Region","D (high)", "Region","Size","Port Group")) %>%
+  dplyr::select(-coefficients,-sig,-adj_x) %>%
+  spread(key=variable,value=coefficients_scaled) %>%
+  mutate(DvR=abs(`D (high)`)/abs(Region),
+         DvS=abs(`D (high)`)/abs(Size),
+         DvP=abs(`D (high)`)/abs(`Port Group`),
+         DRvR=abs(`D (high) : Region`)/abs(Region),
+         DRvS=abs(`D (high) : Region`)/abs(Size),
+         DRvP=abs(`D (high) : Region`)/abs(`Port Group`)) %>%
+  dplyr::select(metric,season,DvR,DvS,DvP,DRvR,DRvS,DRvP) %>%
+  arrange(season)
+```
+<br>
