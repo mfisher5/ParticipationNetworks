@@ -78,6 +78,12 @@ collapse_confidential_early <- function(A, vpf_2014,vpf_2015, no_drop=c("DCRB_PO
     vpf_2015 <- vpf_2015[-which(names(vpf_2015) %in% pl_metiers)]; vpf_2015 <- c(vpf_2015,vpf_op_2015)
   }
   if(length(to_collapse) > 0){
+    if(is.null(names(to_collapse))){    ### added Oct 2020 to deal with alternative object types for to_collapse ###
+      vpf_op_2014 <- sum(vpf_2014[colnames(to_collapse)]); names(vpf_op_2014) <- "OTHR"
+      vpf_op_2015 <- sum(vpf_2015[colnames(to_collapse)]); names(vpf_op_2015) <- "OTHR"
+      vpf_2014 <- vpf_2014[-which(names(vpf_2014) %in% colnames(to_collapse))]; vpf_2014 <- c(vpf_2014,vpf_op_2014)
+      vpf_2015 <- vpf_2015[-which(names(vpf_2015) %in% colnames(to_collapse))]; vpf_2015 <- c(vpf_2015,vpf_op_2015)      
+    }
     vpf_op_2014 <- sum(vpf_2014[names(to_collapse)]); names(vpf_op_2014) <- "OTHR"
     vpf_op_2015 <- sum(vpf_2015[names(to_collapse)]); names(vpf_op_2015) <- "OTHR"
     vpf_2014 <- vpf_2014[-which(names(vpf_2014) %in% colnames(to_collapse))]; vpf_2014 <- c(vpf_2014,vpf_op_2014)

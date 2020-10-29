@@ -31,6 +31,7 @@ if(!require("igraph")) {install.packages("igraph")}
 if(!require("ggplot2")) {install.packages("ggplot2")}
 if(!require("ggraph")) {install.packages("ggraph")}
 if(!require("grid")) {install.packages("grid")}
+if(!require("ggimage")) {install.packages("ggimage")}
 if(!require("gridExtra")) {install.packages("gridExtra")}
 ```
 <br>
@@ -55,7 +56,7 @@ indir <- 'data/networks/vessel_flow'
 Identify the port groups that you would like to produce networks for. The port groups vector should include only those port groups which have associated `igraph` objects. Also list out the full names of the ports, so that names are used instead of codes on the figure.
 ```{r}
 myports <- c("CCA", "ERA", "BGA", "BDA", "SFA", "MRA", "MNA")
-portnames <- c("Crescent City", "Eureka", "Fort Bragg", "Bodega Bay", "San Francisco", "Monterey Bay", "Morro Bay")
+portnames <- c("Crescent City", "Eureka", "Fort Bragg", "Bodega Bay", "San Francisco", "Monterey", "Morro Bay")
 ```
 <br>
 
@@ -83,6 +84,8 @@ names(graphs_list) <- list_names
 ```
 <br>
 
+## With D. crab node labeled
+
 Apply the plotting function to all of the graphs in the list.
 ```{r}
 myplots <- lapply(graphs_list, plot_directed_early)
@@ -103,13 +106,200 @@ dev.off()
 ```
 <br>
 
+# With D. crab node as icon
+```{r}
+plot_directed_early = function (g) {
+  ####### for all graphs ######
+  # save the port group
+  p=unique(V(g)$port) # port group
+  # color the network nodes
+  V(g)$color <- vertex_color(g) # node colors
+  # remove any nodes with size of 0 in 2015 (except for Dungeness crab)
+  g <- delete.vertices(g, V(g)[which(V(g)$size==0 & V(g)$name != "DCRB_POT")])
+  
+  ## get node sizes, and reset 2015 d.crab node size to the 2014 participation
+  dcrb_node <- which(V(g)$name=="DCRB_POT")
+  vsizes=V(g)$size
+  vsizes[dcrb_node] = V(g)$size14[dcrb_node]
+  
+  # to plot vertices with only self loops on the left side of the graph
+  self_only <- c()
+  self_g = delete.edges(g,E(g)[!(which_loop(g))])
+  self_loops <- as_edgelist(self_g)[,1]
+  
+  # set the 'y' axis locations of each node. This also requires you to set the start and end of the edges. 
+  node.y <- unlist(lapply(V(g)$name,FUN=function(i){ifelse(i %in% c("DCRB_POT",self_only), 1,ifelse(i %in% self_loops, 0.1,0))}))
+  edge.y <- unlist(lapply(as_edgelist(g)[,1],FUN=function(i){ifelse(i %in% c("DCRB_POT",self_only), 1,ifelse(i %in% self_loops, 0.1,0))}))
+  edge.yend <- unlist(lapply(as_edgelist(g)[,2],FUN=function(i){ifelse(i %in% c("DCRB_POT",self_only), 1,ifelse(i %in% self_loops, 0.1,0))}))
+  node.y.lab <- unlist(lapply(V(g)$name,FUN=function(i){ifelse(i %in% c("DCRB_POT",self_only), 1.2,ifelse(i %in% self_loops, -0.5,-0.5))}))
+  
+  # crab node location
+  crab_node <- data.frame(x=-0.5, y=1, crab_image=here::here('data/input', 'crab_icon_NWFSCgraphics.png'))
+  # empty crab node common name so it isn't labeled on the graph
+  V(g)$common_name[which(V(g)$common_name=="D.crab")] <- ""
+  
+  ####### small / large vessel graphs ######
+  # save the size category
+  s=unique(V(g)$vsize)
+  s=ifelse(s=="large","Large","Small")
+  # the graph will be labeled with the port group, for large vessels (on left of combined graph)
+  if(s=="Large"){ylabel=p} else{ylabel=""}
+  
+  ### if none of the vertices have self-loops ###
+  if(ecount(self_g) < 1){
+    ggraph(g, 'igraph', algorithm = 'tree') + 
+      geom_edge_diagonal(aes(y=edge.y,yend=edge.yend,width=sqrt((E(g)$weight))), 
+                         color="grey85",end_cap = circle(0.5),arrow=arrow(length=unit(0.3,'cm'))) +
+      geom_node_point(aes(y=node.y),color=factor(V(g)$color),
+                      size=12*sqrt(vsizes)/sqrt(max(vsizes))) +
+      geom_node_text(aes(y=node.y.lab,label = common_name), size=5) +
+      geom_image(data=crab_node, aes(x=x,y=y,image=crab_image), size = 0.25, by="width") +
+      scale_size_identity() +
+      #annotate("text", x = 1.35, y = 0.5, label = paste0(s," Vessels"), size=4) +
+      xlab(ylabel) +
+      xlim(c(-2.7,2.7)) +
+      # ylim(c(-0.05,1.1)) +
+      theme_void() +
+      theme(legend.position="none", 
+            axis.title.y=element_text(angle=90,size=20,hjust=0.5),
+            panel.border = element_rect(colour = "black", fill=NA, size=1)) +
+      coord_flip() +
+      scale_y_reverse(expand=expansion(add=c(0.5,1)))
+    ### if 1+ vertices have self-loops ###
+  } else{
+    ggraph(g, 'igraph', algorithm = 'tree') + 
+      geom_edge_diagonal(aes(y=edge.y,yend=edge.yend,width=sqrt((E(g)$weight))), 
+                         color="grey85",end_cap = circle(0.5),arrow=arrow(length=unit(0.3,'cm'))) +
+      geom_edge_loop(aes(y=edge.y,width=sqrt((E(g)$weight)), span=50,direction=0,strength=0.90), color="grey85") +
+      geom_node_point(aes(y=node.y),color=factor(V(g)$color),
+                      size=12*sqrt(vsizes)/sqrt(max(vsizes))) +
+      geom_node_text(aes(y=node.y.lab,label = common_name), size=5) +
+      geom_image(data=crab_node, aes(x=x,y=y,image=crab_image), size = 0.25, by="width") +
+      scale_size_identity() +
+      xlab(ylabel) +
+      xlim(c(-2.7,2.7)) +
+      # ylim(c(-0.09,1.15)) +
+      theme_void() +
+      theme(legend.position="none", 
+            axis.title.y=element_text(angle=90,size=20,hjust=0.5),
+            panel.border = element_rect(colour = "black", fill=NA, size=1)) +
+      coord_flip() +
+      scale_y_reverse(expand=expansion(add=c(0.15,1)))
+  }
+}
+```
+<br>
+
+
+Apply the plotting function to all of the graphs in the list.
+```{r}
+myplots <- lapply(graphs_list, plot_directed_early)
+```
+<br>
+
+Create Figure 3, with column and x axis titles.
+```{r}
+col.titles=c("Large","Small")
+ylabel="2015                                      2016"
+png(here::here("results/figures","Figure3_icon.png"), width=1800,height=3000,res=200)
+grid.arrange(grobs=lapply(c(1,2), function(i) {
+  arrangeGrob(grobs=myplots[seq(i,14,by=2)], top=textGrob(col.titles[i],gp=gpar(fontsize=22)), 
+              bottom=textGrob(ylabel,gp=gpar(fontsize=18)),
+              ncol=1)
+}), ncol=2)
+dev.off()
+```
+
+
 ---
 
 `r Sys.time() - script_start_time`
 
 
 
-
+```{r}
+crab_image <- readPNG(here::here('data/input', 'crab_icon_NWFSCgraphics.png'))
+g <- graphs_list[[1]]
+  
+  ####### for all graphs ######
+  # save the port group
+  p=unique(V(g)$port) # port group
+  # color the network nodes
+  V(g)$color <- vertex_color(g) # node colors
+  # remove any nodes with size of 0 in 2015 (except for Dungeness crab)
+  g <- delete.vertices(g, V(g)[which(V(g)$size==0 & V(g)$name != "DCRB_POT")])
+  
+  ## get node sizes, and reset 2015 d.crab node size to the 2014 participation
+  dcrb_node <- which(V(g)$name=="DCRB_POT")
+  vsizes=V(g)$size
+  vsizes[dcrb_node] = V(g)$size14[dcrb_node]
+  
+  # to plot vertices with only self loops on the left side of the graph
+  self_only <- c()
+  self_g = delete.edges(g,E(g)[!(which_loop(g))])
+  self_loops <- as_edgelist(self_g)[,1]
+  
+  # set the 'y' axis locations of each node. This also requires you to set the start and end of the edges. 
+  node.y <- unlist(lapply(V(g)$name,FUN=function(i){ifelse(i %in% c("DCRB_POT",self_only), 1,ifelse(i %in% self_loops, 0.1,0))}))
+  edge.y <- unlist(lapply(as_edgelist(g)[,1],FUN=function(i){ifelse(i %in% c("DCRB_POT",self_only), 1,ifelse(i %in% self_loops, 0.1,0))}))
+  edge.yend <- unlist(lapply(as_edgelist(g)[,2],FUN=function(i){ifelse(i %in% c("DCRB_POT",self_only), 1,ifelse(i %in% self_loops, 0.1,0))}))
+  node.y.lab <- unlist(lapply(V(g)$name,FUN=function(i){ifelse(i %in% c("DCRB_POT",self_only), 1.2,ifelse(i %in% self_loops, -0.5,-0.5))}))
+  
+  # crab node location
+  crab_node <- data.frame(x=-0.5, y=1, crab_image=here::here('data/input', 'crab_icon_NWFSCgraphics.png'))
+  # empty crab node common name so it isn't labeled on the graph
+  V(g)$common_name[which(V(g)$common_name=="D.crab")] <- ""
+  
+  ####### small / large vessel graphs ######
+  # save the size category
+  s=unique(V(g)$vsize)
+  s=ifelse(s=="large","Large","Small")
+  # the graph will be labeled with the port group, for large vessels (on left of combined graph)
+  if(s=="Large"){ylabel=p} else{ylabel=""}
+  
+  ### if none of the vertices have self-loops ###
+  if(ecount(self_g) < 1){
+    ggraph(g, 'igraph', algorithm = 'tree') + 
+      geom_edge_diagonal(aes(y=edge.y,yend=edge.yend,width=sqrt((E(g)$weight))), 
+                         color="grey85",end_cap = circle(0.5),arrow=arrow(length=unit(0.3,'cm'))) +
+      geom_node_point(aes(y=node.y),color=factor(V(g)$color),
+                      size=12*sqrt(vsizes)/sqrt(max(vsizes))) +
+      geom_node_text(aes(y=node.y.lab,label = common_name), size=5) +
+      geom_image(data=crab_node, aes(x=x,y=y,image=crab_image), size=0.5) +
+      #annotate("text", x = 1.35, y = 0.5, label = paste0(s," Vessels"), size=4) +
+      xlab(ylabel) +
+      xlim(c(-2.7,2.7)) +
+      # ylim(c(-0.05,1.1)) +
+      theme_void() +
+      theme(legend.position="none", 
+            axis.title.y=element_text(angle=90,size=20,hjust=0.5),
+            panel.border = element_rect(colour = "black", fill=NA, size=1)) +
+      coord_flip() +
+      scale_y_reverse(expand=expansion(add=c(0.5,1)))
+    ### if 1+ vertices have self-loops ###
+  } else{
+    ggraph(g, 'igraph', algorithm = 'tree') + 
+      geom_edge_diagonal(aes(y=edge.y,yend=edge.yend,width=sqrt((E(g)$weight))), 
+                         color="grey85",end_cap = circle(0.5),arrow=arrow(length=unit(0.3,'cm'))) +
+      geom_edge_loop(aes(y=edge.y,width=sqrt((E(g)$weight)), span=50,direction=0,strength=0.90), color="grey85") +
+      geom_node_point(aes(y=node.y),color=factor(V(g)$color),
+                      size=12*sqrt(vsizes)/sqrt(max(vsizes))) +
+      geom_node_text(aes(y=node.y.lab,label = common_name), size=5) +
+      geom_image(data=crab_node, aes(x=x,y=y,image=crab_image), size=0.07) +
+      xlab(ylabel) +
+      xlim(c(-2.7,2.7)) +
+      # ylim(c(-0.09,1.15)) +
+      theme_void() +
+      theme(legend.position="none", 
+            axis.title.y=element_text(angle=90,size=20,hjust=0.5),
+            panel.border = element_rect(colour = "black", fill=NA, size=1)) +
+      coord_flip() +
+      scale_y_reverse(expand=expansion(add=c(0.15,1)))
+  }
+}
+plot_directed_early(graphs_list[[1]])
+```
+<br>
 
 
 

@@ -14,8 +14,8 @@
 #' @export
 rename_vertices <- function(g){
   new_names <- V(g)$common_name %>%
-    str_replace("Misc. Pot/H&L", "Misc.(Pot,HL)") %>%
-    str_replace("Misc. Fisheries", "Misc.") %>%
+    str_replace("Misc. Pot/H&L", "Other (Pot,HL)") %>%
+    str_replace("Misc. Fisheries", "Other") %>%
     str_replace("Rockfish/Lcod","RockLing") %>%
     str_replace("DTS Trawl","Groundfish") %>%
     str_replace("Dcrab","D.crab")

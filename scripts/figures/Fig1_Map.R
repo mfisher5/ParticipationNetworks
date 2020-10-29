@@ -37,7 +37,7 @@ pcgroup_coords[6,"Lon_label"] <- pcgroup_coords[6,"Lon_label"] + 0.28 #MRA
 pcgroup_coords[5,"Lon_label"] <- pcgroup_coords[5,"Lon_label"] + 0.18 #MNA
 
 
-# map without legend
+# map without legend, basic grey fill
 myplot <- ggplot() +
   geom_polygon(data=ca_df, aes(x=long, y=lat, group=group), fill="grey67",linetype=1, color = "grey97") +
   geom_point(data=pcgroup_coords, aes(x=Lon, y=Lat, col=dcrb_between, pch=region), size = c(rep(5,4),rep(4,3))) +
@@ -55,6 +55,40 @@ myplot
 png(here::here('results/figures','fig1/Figure1_map.png'), bg="transparent",width = 4, height = 5, units = 'in', res = 300)
 myplot # Make plot
 dev.off()
+
+# map without legend, topographic fill
+
+
+library(raster)
+dem.raster <- getData("SRTM", lat = 38, lon = -120, download = TRUE)
+dem.m  <-  rasterToPoints(dem.raster)
+dem.df <-  data.frame(dem.m)
+colnames(dem.df) = c("lon", "lat", "alt")
+slope.raster <- terrain(dem.raster, opt='slope')
+aspect.raster <- terrain(dem.raster, opt='aspect')
+hill.raster <- hillShade(slope.raster, aspect.raster, 40, 270)
+hill.m <- rasterToPoints(hill.raster)
+hill.df <-  data.frame(hill.m)
+colnames(hill.df) <- c("lon", "lat", "hill")
+
+
+myplot <- ggplot() +
+  geom_polygon(data=ca_df, aes(x=long, y=lat, group=group), fill="grey67",linetype=1, color = "grey97") +
+  geom_raster(data = hill.df, aes(lon, lat, fill = hill), alpha = .45) +
+  geom_point(data=pcgroup_coords, aes(x=Lon, y=Lat, col=dcrb_between, pch=region), size = c(rep(5,4),rep(4,3))) +
+  geom_point(data=pcgroup_coords, aes(x=Lon, y=Lat), pch=c(rep(1,4),rep(0,3)), col="black", size = c(rep(5,4),rep(4,3))) +
+  geom_text(data=pcgroup_coords, aes(x=Lon_label, y=Lat_label, label=port_group_name),size=4) +
+  theme_void() +
+  scale_color_continuous(low="palegoldenrod", high="darkorange3", limits=c(0,1)) +
+  scale_shape_manual(values=c(15,16)) +
+  theme(panel.background = element_rect(fill = 'transparent'),
+        plot.background = element_rect(fill='transparent', color=NA),
+        legend.position="none") +
+  coord_cartesian(xlim = c(-125, -114), ylim=c(33, 46))
+myplot
+
+
+
 
 # legend, white text for dark background
 plot_leg <- ggplot(data=pcgroup_coords, aes(x=Lon, y=Lat, col=dcrb_between)) +
