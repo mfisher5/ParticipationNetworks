@@ -54,8 +54,8 @@ indir <- 'data/networks/vessel_flow'
 
 Identify the port groups that you would like to produce networks for. The port groups vector should include only those port groups which have associated `igraph` objects. Also list out the full names of the ports, so that names are used instead of codes on the figure.
 ```{r}
-myports <- c("CCA", "ERA", "BGA", "BDA", "SFA", "MRA", "MNA")
-portnames <- c("Crescent City", "Eureka", "Fort Bragg", "Bodega Bay", "San Francisco", "Monterey Bay", "Morro Bay")
+myports <- c("CCA", "ERA", "BGA", "BDA", "SFA", "MNA", "MRA")
+portnames <- c("Crescent City", "Eureka", "Fort Bragg", "Bodega Bay", "San Francisco", "Monterey", "Morro Bay")
 ```
 <br>
 
@@ -135,7 +135,7 @@ Create Figure S5 - Central, with column and x axis titles.
 ```{r}
 col.titles=c("Large","Small")
 ylabel="2015                                      2016"
-png(here::here("results/figures","FigureS5_Central.png"), width=2000,height=3400,res=200)
+png(here::here("results/figures","FigureS5_Central.png"), width=2000,height=2600,res=200)
 grid.arrange(grobs=lapply(c(1,2), function(i) {
   arrangeGrob(grobs=myplots[seq(i,6,by=2)], top=textGrob(col.titles[i],gp=gpar(fontsize=22)), 
               bottom=textGrob(ylabel,gp=gpar(fontsize=18)),

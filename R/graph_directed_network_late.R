@@ -5,9 +5,10 @@
 #' Original function name: plot_graph. For script FigS5.Rmd
 #'
 #' @param g igraph object
+#' @param dist_y set the vertical distance between network nodes (this is actually on the x axis due to coord_flip())
 #' @return a ggraph object
 #' @examples
-#' plot_directed_late(g=mygraph,dist_y=1.8)
+#' plot_directed_late(g=mygraph,dist_y=1.4)
 #' @export
 plot_directed_late = function (g, dist_y=1.8) {
   ## prepare for plotting ##
@@ -24,7 +25,7 @@ plot_directed_late = function (g, dist_y=1.8) {
   ## set location of nodes ##
   # initiate data frame & specify order of nodes (fishery --> d.crab --> no fishing / other port) 
   node.x <- c(); node.x.lab <- c()
-  m=-1.5; d=-2; f=0
+  m=-1.5; d=-1; f=0
   node.x.df <- data.frame(node=as.character(),
                           xval=as.numeric())
   
@@ -39,7 +40,7 @@ plot_directed_late = function (g, dist_y=1.8) {
     if(!(n %in% c("other_port","no_fishing"))){
       if(n=="DCRB_POT" & crab_flow){
         node.x <- c(node.x, d)
-        node.x.lab <- c(node.x.lab, d-0.3)
+        node.x.lab <- c(node.x.lab, d-0.4)
         node.x.df <- rbind(node.x.df, data.frame(node=as.character(n),xval=d))
       } else{
         node.x <- c(node.x, m)
@@ -82,6 +83,10 @@ plot_directed_late = function (g, dist_y=1.8) {
   # set x upper limit based on number of nodes
   x_up <- max(node.x.df$xval) + 1.75
   
+  # rescale node size - this is how ggraph scale the network edges (except edges use a (1,6) instead of (2,10) scale)
+  vsizes_scaled <- scales::rescale(c(1,vsizes), to=c(2,10))  ## add 1 as lower limit to avoid tiny nodes when vessel count = 3
+  vsizes_scaled <- vsizes_scaled[2:length(vsizes_scaled)]
+  
   ## graph of large / small vessels ##
   # if the graph does not include self-loops...
   if(ecount(self_g) < 1){
@@ -89,7 +94,7 @@ plot_directed_late = function (g, dist_y=1.8) {
       geom_edge_diagonal(aes(y=edge.y,yend=edge.yend,x=el$edge.x, xend=el$edge.xend,width=((E(g)$weight)^(1/3))), 
                          color="grey85",end_cap = circle(0.5),arrow=arrow(length=unit(0.3,'cm'))) +
       geom_node_point(aes(y=node.y, x = node.x),color=factor(V(g)$color),
-                      size=10*sqrt(vsizes)/sqrt(max(vsizes))) +
+                      size=vsizes_scaled) +
       geom_node_text(aes(y=node.y.lab,x=node.x.lab,label = common_name), size=5) +
       xlab(ylabel) +
       xlim(c(-2.5,6.5)) +
@@ -108,7 +113,7 @@ plot_directed_late = function (g, dist_y=1.8) {
                          color="grey85",end_cap = circle(0.5),arrow=arrow(length=unit(0.3,'cm'))) +
       geom_edge_loop(aes(y=edge.y,x=el$edge.x,width=(E(g)$weight)^(1/3), span=50,direction=0,strength=1.30), color="grey85") +
       geom_node_point(aes(y=node.y, x = node.x),color=factor(V(g)$color),
-                      size=10*sqrt(vsizes)/sqrt(max(vsizes))) +
+                      size=vsizes_scaled) +
       geom_node_text(aes(y=node.y.lab,x=node.x.lab,label = common_name), size=5) +
       xlab(ylabel) +
       xlim(c(-2.5,x_up)) +

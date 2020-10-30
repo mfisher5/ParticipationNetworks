@@ -22,6 +22,9 @@ rename_vertices <- function(g){
   new_names[which(new_names=="Hagfish (pot)")] <- "Hagfish"
   new_names[which(new_names=="Sablefish (Lgl)")] <- "Sablefish"
   new_names[which(new_names=="Sablefish (pot)")] <- "Sablefish"
+  new_names[which(new_names=="Chinook (trl)")] <- "Chinook"
+  new_names[which(new_names=="Shrimp (pot)")] <- "Shrimp"
+  new_names[which(new_names=="C. Halibut (pole)")] <- "C. Halibut"
   ## add lines HERE: new_names[which(new_names=="{old name}")] <- "{new name}" ##
   V(g)$common_name <- new_names
   return(g)
