@@ -17,7 +17,7 @@ plot_directed_late = function (g, dist_y=1.8) {
   p=unique(V(g)$port)
   V(g)$color <- vertex_color(g)
   vsizes=V(g)$size
-
+  
   # for plotting self-loops
   self_g = delete.edges(g,E(g)[!(which_loop(g))])
   self_loops <- as_edgelist(self_g)[,1]
@@ -83,8 +83,8 @@ plot_directed_late = function (g, dist_y=1.8) {
   # set x upper limit based on number of nodes
   x_up <- max(node.x.df$xval) + 1.75
   
-  # rescale node size - this is how ggraph scale the network edges (except edges use a (1,6) instead of (2,10) scale)
-  vsizes_scaled <- scales::rescale(c(1,vsizes), to=c(2,10))  ## add 1 as lower limit to avoid tiny nodes when vessel count = 3
+  # rescale node size
+  vsizes_scaled <- scales::rescale(c(1,vsizes), to=c(2,10))
   vsizes_scaled <- vsizes_scaled[2:length(vsizes_scaled)]
   
   ## graph of large / small vessels ##

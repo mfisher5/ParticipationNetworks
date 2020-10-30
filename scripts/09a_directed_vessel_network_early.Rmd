@@ -109,7 +109,7 @@ Read in the landings data, from the file containing all fish tickets across port
 years <- c(2014,2015)
 
 for(y in years){
-  tmptix <- read.csv(here::here(indir, paste0("FishTix_crab", y, "_metiers_k1_recoded.csv")), stringsAsFactors = FALSE)
+  tmptix <- read.csv(here::here(indir, paste0("FishTix_crab", y, "_metiers_k",k,"_recoded.csv")), stringsAsFactors = FALSE)
   if(exists('fishtix')){
     fishtix <- rbind(fishtix, tmptix)
   } else{
