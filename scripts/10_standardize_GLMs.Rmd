@@ -99,6 +99,9 @@ Select the three main network metrics, and assign port groups to a region.
 data <- read.csv(here::here(indir, statfile)) %>%
   dplyr::select(y,period, pcgroup, N, ed, nc_weighted,m_weighted, mean_deg, nc, m) %>%
   mutate(R = ifelse(pcgroup %in% c("CCA", "ERA", "BGA","BDA"), "North", "Central"))
+
+data$R <- factor(data$R, levels=c("North","Central"))
+
 colnames(data)
 ```
 <br>

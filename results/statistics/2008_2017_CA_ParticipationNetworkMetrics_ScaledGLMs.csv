@@ -1,35 +1,35 @@
 "coefficients","variable","metric","season","sig","adj_x"
 -0.406946995249314,"D (medium)","Edge Density","Early Season","",-0.556946995249314
 -0.742757482289758,"D (high)","Edge Density","Early Season","***",-0.892757482289758
--0.438287281411114,"R (Central)","Edge Density","Early Season","",-0.588287281411114
+0.438287281411114,"R (Central)","Edge Density","Early Season","",0.538287281411113
 -1.36341405694045,"Size","Edge Density","Early Season","**",-1.51341405694045
 -0.937742072154242,"Port Group","Edge Density","Early Season",NA,-1.08774207215424
--2.1571179148938,"D (high) : R (Central)","Edge Density","Early Season","***",-2.3071179148938
+2.1571179148938,"D (high) : R (Central)","Edge Density","Early Season","***",2.2571179148938
 0.0150382087473791,"D (medium)","Edge Density","Late Season","",0.115038208747379
 -0.0586910183795253,"D (high)","Edge Density","Late Season","",-0.208691018379525
--1.25826273696455,"R (Central)","Edge Density","Late Season","",-1.40826273696455
+1.25826273696455,"R (Central)","Edge Density","Late Season","",1.35826273696455
 -1.0791340131908,"Size","Edge Density","Late Season","***",-1.2291340131908
 -0.985882185501084,"Port Group","Edge Density","Late Season",NA,-1.13588218550108
-0.217530254291077,"D (high) : R (Central)","Edge Density","Late Season","",0.317530254291077
+-0.217530254291077,"D (high) : R (Central)","Edge Density","Late Season","",-0.367530254291077
 -0.0866179593132875,"D (medium)","Centralization","Early Season","",-0.236617959313288
 -0.361556432567879,"D (high)","Centralization","Early Season","***",-0.511556432567879
-0.20621212254357,"R (Central)","Centralization","Early Season","",0.30621212254357
+-0.20621212254357,"R (Central)","Centralization","Early Season","",-0.35621212254357
 -0.947312604001893,"Size","Centralization","Early Season","***",-1.09731260400189
--1.13774887797098,"D (high) : R (Central)","Centralization","Early Season","***",-1.28774887797098
+1.13774887797098,"D (high) : R (Central)","Centralization","Early Season","***",1.23774887797098
 0.153940793482439,"D (medium)","Centralization","Late Season","",0.253940793482439
 0.155761418598113,"D (high)","Centralization","Late Season","",0.255761418598113
--0.453901595823139,"R (Central)","Centralization","Late Season","",-0.603901595823139
+0.453901595823139,"R (Central)","Centralization","Late Season","",0.553901595823139
 -0.683070357292546,"Size","Centralization","Late Season","*",-0.833070357292546
 -0.469138386043664,"Port Group","Centralization","Late Season",NA,-0.619138386043664
-0.176350696837486,"D (high) : R (Central)","Centralization","Late Season","",0.276350696837486
+-0.176350696837486,"D (high) : R (Central)","Centralization","Late Season","",-0.326350696837486
 -0.0520712238682743,"D (medium)","Modularity","Early Season","",-0.202071223868274
 0.0714297836553026,"D (high)","Modularity","Early Season","",0.171429783655303
--0.00346350976880242,"R (Central)","Modularity","Early Season","",-0.153463509768802
+0.00346350976880242,"R (Central)","Modularity","Early Season","",0.103463509768802
 0.47673704407642,"Size","Modularity","Early Season","***",0.57673704407642
-0.0373890741477412,"D (high) : R (Central)","Modularity","Early Season","",0.137389074147741
+-0.0373890741477412,"D (high) : R (Central)","Modularity","Early Season","",-0.187389074147741
 -0.0247864876940991,"D (medium)","Modularity","Late Season","",-0.174786487694099
 -0.0631692753355884,"D (high)","Modularity","Late Season","",-0.213169275335588
-0.375232602120564,"R (Central)","Modularity","Late Season","",0.475232602120564
+-0.375232602120564,"R (Central)","Modularity","Late Season","",-0.525232602120564
 0.382150906222534,"Size","Modularity","Late Season","***",0.482150906222534
 0.325696747503564,"Port Group","Modularity","Late Season",NA,0.425696747503564
--0.060986286123084,"D (high) : R (Central)","Modularity","Late Season","",-0.210986286123084
+0.060986286123084,"D (high) : R (Central)","Modularity","Late Season","",0.160986286123084

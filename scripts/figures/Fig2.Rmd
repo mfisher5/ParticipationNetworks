@@ -357,7 +357,109 @@ p <- as_ggplot(plot.out) +                                # transform to a ggplo
   draw_plot_label(label = c("(a)", "(b)"), size = 11,
                   x = c(0.15, 0.15), y = c(1, 0.6)) # Add labels
 
-png(here::here('results/figures','Figure2.png'), res=300, height=1700,width=1700)
+png(here::here('results/figures','Figure2_color.png'), res=300, height=1700,width=1700)
+p
+dev.off()
+```
+<br>
+
+#### Black and White
+
+Remove color from figure, use point shapes that match Figure 1, and make the line width a little thinner.
+```{r}
+datplot.e <- ggplot(data=filter(duration_avg,season=="Early Season"), aes(x=D,y=avg)) +
+  geom_point(aes(col=Region,pch=Region),size=2, fill="gray20") +
+  geom_path(aes(col=Region,group=Region),size=0.5) +
+  geom_errorbar(aes(ymin=avg-se,ymax=avg+se,col=Region,group=Region), width=0.25, size=0.25) +
+  facet_grid_sc(cols=vars(dat), rows = vars(metric), as.table=FALSE, scales=list(y = scales_y), switch="y") +
+  scale_color_manual(values=c("gray10","gray48"), name="Region") +
+  scale_shape_manual(values=c(22,16)) +
+  theme_bw() + theme(legend.position="left",
+                     legend.text=element_text(size=14),
+                     legend.title=element_text(size=14),
+                     axis.title=element_blank(),
+                     axis.text.x=element_blank(),
+                     axis.text.y=element_text(size=10),
+                     panel.grid.major.y=element_blank(),
+                     panel.grid.minor.y=element_blank(),
+                     strip.background.x=element_rect("white"),
+                     strip.text.x=element_text(size=14),
+                     strip.text.y=element_text(size=14),
+                     strip.placement = "outside")
+
+glmplot.e <- ggplot(data=filter(glmcoef,season=="Early Season"), aes(x=variable,y=coefficients)) +
+  geom_col(fill="grey50") +
+  geom_text(aes(x=variable,y=adj_x,label=sig),size=4) +
+  geom_hline(yintercept=0, color="grey40",lty="longdash", size=0.25) +
+  facet_grid(cols=vars(dat), rows=vars(metric), switch="y") +
+  scale_y_continuous(position="right", limits=c(-2.5,2.5), breaks=c(-2,0,2)) + 
+  theme_bw() + theme(legend.position="none",
+                     axis.title=element_blank(),
+                     axis.text.x=element_blank(),
+                     axis.text.y=element_text(size=10),
+                     panel.grid.major.y=element_blank(),
+                     panel.grid.minor.y=element_blank(),
+                     strip.text.y=element_blank(),
+                     strip.text.x=element_text(size=14),
+                     strip.background.y=element_blank(),
+                     strip.background.x=element_rect("white"),
+                     strip.placement = "outside")
+```
+<br>
+
+Remove color from figure, use point shapes that match Figure 1, make the line width a little thinner.
+```{r}
+datplot.l <- ggplot(data=filter(duration_avg,season=="Late Season"), aes(x=D,y=avg)) +
+  geom_point(aes(col=Region,pch=Region),size=2, fill="gray20") +
+  geom_path(aes(col=Region,group=Region),size=0.5) +
+  geom_errorbar(aes(ymin=avg-se,ymax=avg+se,col=Region,group=Region), width=0.25, size=0.25) +
+  facet_grid_sc(rows = vars(metric), as.table=FALSE,scales=list(y = scales_y), switch="y") +
+  scale_color_manual(values=c("gray10","gray48"), name="Region") +
+  scale_shape_manual(values=c(22,16)) +
+  xlab("Closure Duration") +
+  theme_bw() + theme(legend.position="none",
+                     axis.title.y=element_blank(),
+                     axis.title.x=element_text(size=14),
+                     axis.text.x=element_text(angle=90,hjust=1, vjust=0.5, size=12, margin = margin(t = 0, r = 0, b = 46.5, l = 0)),
+                     axis.text.y=element_text(size=10),
+                     panel.grid.major.y=element_blank(),
+                     panel.grid.minor.y=element_blank(),
+                     strip.background.x=element_rect("white"),
+                     strip.text=element_text(size=14),
+                     strip.placement = "outside",
+                     plot.margin = unit(c(5.5,5.5,5.5,97), "pt"))
+
+glmplot.l <- ggplot(data=filter(glmcoef,season=="Late Season"), aes(x=variable,y=coefficients)) +
+  geom_col(fill="grey50") +
+  geom_text(aes(x=variable,y=adj_x,label=sig),size=4) +
+  geom_hline(yintercept=0, color="grey40",lty="longdash", size=0.25) +
+  facet_grid(rows=vars(metric), switch="y") +
+  scale_fill_manual(values=c("grey60","grey30")) +
+  scale_y_continuous(position="right", limits=c(-2.5,2.5), breaks=c(-2,0,2)) +  
+  xlab("Variable") +
+  theme_bw() + theme(legend.position="none",
+                     axis.title.y=element_blank(),
+                     axis.title.x=element_text(size=14),
+                     axis.text.x=element_text(angle=90,hjust=1,vjust=0.5, size=12),
+                     axis.text.y=element_text(size=10),
+                     panel.grid.major.y=element_blank(),
+                     panel.grid.minor.y=element_blank(),
+                     strip.text.y=element_blank(),
+                     strip.background.y=element_blank(),
+                     strip.placement = "outside")
+```
+<br>
+
+```{r}
+plot.out <- grid.arrange(grobs=list(datplot.e, glmplot.e, datplot.l, glmplot.l), nrow=2, ncol=2, widths=c(1, 0.75), heights=c(0.7,1))
+
+
+# Add labels to the arranged plots
+p <- as_ggplot(plot.out) +                                # transform to a ggplot
+  draw_plot_label(label = c("(a)", "(b)"), size = 12,
+                  x = c(0.1, 0.1), y = c(1, 0.6)) # Add labels
+
+png(here::here('results/figures','Figure2.png'), width=1200, height=1400, res=200)
 p
 dev.off()
 ```

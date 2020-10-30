@@ -1645,7 +1645,7 @@ summary {
 <h1 class="title toc-ignore">Standardize Final GLMs</h1>
 <h3 class="subtitle">Preparation for network analysis in Fisher et al.</h3>
 <h4 class="author">M. Fisher</h4>
-<h4 class="date">Written Mar. 8, 2019. Last Run 2020-10-11</h4>
+<h4 class="date">Written Mar. 8, 2019. Last Run 2020-10-30</h4>
 
 </div>
 
@@ -1706,6 +1706,9 @@ if(!require(&quot;stargazer&quot;)) {install.packages(&quot;stargazer&quot;)}</c
 <pre class="r"><code>data &lt;- read.csv(here::here(indir, statfile)) %&gt;%
   dplyr::select(y,period, pcgroup, N, ed, nc_weighted,m_weighted, mean_deg, nc, m) %&gt;%
   mutate(R = ifelse(pcgroup %in% c(&quot;CCA&quot;, &quot;ERA&quot;, &quot;BGA&quot;,&quot;BDA&quot;), &quot;North&quot;, &quot;Central&quot;))
+
+data$R &lt;- factor(data$R, levels=c(&quot;North&quot;,&quot;Central&quot;))
+
 colnames(data)</code></pre>
 <pre><code>##  [1] &quot;y&quot;           &quot;period&quot;      &quot;pcgroup&quot;     &quot;N&quot;           &quot;ed&quot;         
 ##  [6] &quot;nc_weighted&quot; &quot;m_weighted&quot;  &quot;mean_deg&quot;    &quot;nc&quot;          &quot;m&quot;          
@@ -1739,10 +1742,10 @@ ei &lt;- get_sc_coef(ed.e, name=&quot;Edge Density&quot;,season=&quot;Early Seas
 ## (Intercept) -0.10     0.10  
 ## Dmedium     -0.41     0.26  
 ## Dhigh       -0.74     0.29  
-## c.R         -0.44     0.43  
+## c.R          0.44     0.43  
 ## z.N         -1.36     0.35  
 ## z.pcgroup   -0.94     0.34  
-## Dhigh:c.R   -2.16     0.58  
+## Dhigh:c.R    2.16     0.58  
 ## ---
 ##   n = 69, k = 7
 ##   residual deviance = 7.6, null deviance = 17.9 (difference = 10.3)
@@ -1755,10 +1758,10 @@ el &lt;- get_sc_coef(ed.l, name=&quot;Edge Density&quot;,season=&quot;Late Seaso
 ## (Intercept) -0.05     0.05  
 ## Dmedium      0.02     0.15  
 ## Dhigh       -0.06     0.16  
-## c.R         -1.26     0.24  
+## c.R          1.26     0.24  
 ## z.N         -1.08     0.21  
 ## z.pcgroup   -0.99     0.19  
-## Dhigh:c.R    0.22     0.31  
+## Dhigh:c.R   -0.22     0.31  
 ## ---
 ##   n = 70, k = 7
 ##   residual deviance = 2.4, null deviance = 6.3 (difference = 3.9)
@@ -1772,9 +1775,9 @@ ci &lt;- get_sc_coef(nc.e, name=&quot;Centralization&quot;,season=&quot;Early Se
 ## (Intercept) -0.05     0.07  
 ## Dmedium     -0.09     0.18  
 ## Dhigh       -0.36     0.20  
-## c.R          0.21     0.24  
+## c.R         -0.21     0.24  
 ## z.N         -0.95     0.25  
-## Dhigh:c.R   -1.14     0.40  
+## Dhigh:c.R    1.14     0.40  
 ## ---
 ##   n = 64, k = 6
 ##   residual deviance = 3.0, null deviance = 6.8 (difference = 3.8)
@@ -1787,10 +1790,10 @@ cl &lt;- get_sc_coef(nc.l, name=&quot;Centralization&quot;,season=&quot;Late Sea
 ## (Intercept) -0.76     0.07  
 ## Dmedium      0.15     0.19  
 ## Dhigh        0.16     0.20  
-## c.R         -0.45     0.31  
+## c.R          0.45     0.31  
 ## z.N         -0.68     0.26  
 ## z.pcgroup   -0.47     0.25  
-## Dhigh:c.R    0.18     0.40  
+## Dhigh:c.R   -0.18     0.40  
 ## ---
 ##   n = 70, k = 7
 ##   residual deviance = 3.4, null deviance = 5.5 (difference = 2.1)
@@ -1806,7 +1809,7 @@ mi &lt;- get_sc_coef(m.e, name=&quot;Modularity&quot;,season=&quot;Early Season&
 ## Dhigh        0.07     0.07  
 ## c.R          0.00     0.09  
 ## z.N          0.48     0.08  
-## Dhigh:c.R    0.04     0.14  
+## Dhigh:c.R   -0.04     0.14  
 ## ---
 ##   n = 70, k = 6
 ##   residual deviance = 1.9, null deviance = 6.1 (difference = 4.1)
@@ -1820,10 +1823,10 @@ ml &lt;- get_sc_coef(m.l, name=&quot;Modularity&quot;,season=&quot;Late Season&q
 ## (Intercept)  0.21     0.02  
 ## Dmedium     -0.02     0.07  
 ## Dhigh       -0.06     0.07  
-## c.R          0.38     0.11  
+## c.R         -0.38     0.11  
 ## z.N          0.38     0.09  
 ## z.pcgroup    0.33     0.09  
-## Dhigh:c.R   -0.06     0.14  
+## Dhigh:c.R    0.06     0.14  
 ## ---
 ##   n = 70, k = 7
 ##   residual deviance = 2.0, null deviance = 4.4 (difference = 2.5)
@@ -1875,7 +1878,7 @@ sigdf &lt;- rbind(sigdf.e,sigdf.l)</code></pre>
 <p><br></p>
 <p><em>From Gelman 2008: The rescaled coefficients are directly interpretable as changes on the logit scale comparing each input variable at a low value to a high value: for the numeric predictors, this is the mean ?1 standard deviation, and for the indicators, this is each level compared with the mean.</em></p>
 <hr />
-<p>Time Difference: 3.321</p>
+<p>Time Difference: 3.359</p>
 </div>
 
 
