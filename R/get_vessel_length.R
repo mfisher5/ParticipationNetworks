@@ -1,6 +1,6 @@
-#' Get Vessel Length
+#' Calculate Vessel Lengths from Registration Data
 #'
-#' Get vessel length, based on either 3 or 5 years of vessel
+#'Get vessel length, based on either 3 or 5 years of vessel
 #' registration data to account for recording error (which is fairly 
 #' frequent in the PacFIN registration data set. The function can 
 #' write out warning messages as it runs about which vessels are 
@@ -9,45 +9,35 @@
 #' This is originally from the script 
 #' Report_Vessel_Length_processedtix_v5_functions.R and is also used in
 #' the VMS-Fish Ticket matching pipeline (see github.com/owenrliu)
-#' For script 00.
+#' For: `script_00`
 #'
-#'tmp_vessel_info$n_length, tmp_vessel_info$n_unique, final_vessel_length, length_calc
-#' @param permits vector of vessel lengths
-#' @param vesseldat vector of the years associated with the vessel lengths
-#' @param lengthdat
-#' @param summarydat
-#' @param index
-#' @return data frame with 4 or 5 columns: number of years of length data available, number of years with unique vessel lengths reported, the final vessel length calculated, and the type of calculation used to generate that length estimate (optional: warning message)
+#' @param permits vessel registration data frame
+#' @param vesseldat vessel IDs for fishing vessels active in a given year
+#' @param lengthdat vessel length from registration data frame
+#' @param summarydat a data frame with contains: VESSEL_NUM, AGENCY_CODE, REGISTRATION_YEAR, n_lengths, n_unique, max_length, min_length, median2yr
+#' @param index index, representing the position of the relevant vessel id in the vesseldat data frame
+#' @return the final vessel length, number of total / unique lengths in the registration data, and the length calculation used. 
 #' @examples
-#' length_info <- calc_length(permits=permits, vesseldat = year_vessels, lengthdat = pthin_length_filter, summarydat = pthin_sumstats, index = i)
+#' tmp_vessel_length_info <- calc_length(permits=permits, vesseldat = year_vessels, lengthdat = pthin_length_filter, summarydat = pthin_sumstats, index = i)
 #' @export
-get_vessel_length <- function(permits, vesseldat, lengthdat, summarydat, index){
+calc_length <- function(permits, vesseldat, lengthdat, summarydat, index){
   ## subset vessel data for vessel_num / agency_code / registration_year for new vessel
   tmp_vessel <- vesseldat[index,]
-  #print(tmp_vessel$VESSEL_NUM)
-  #print(tmp_vessel$AGENCY_CODE)
-  
-  ## dealing with R's annoying object class assignment habit
-  tmp_vessel$drvid <- as.character(tmp_vessel$drvid)
-  summarydat$VESSEL_NUM <- as.character(summarydat$VESSEL_NUM)
-  tmp_vessel$agency_code <- as.character(tmp_vessel$agency_code)
-  summarydat$AGENCY_CODE <- as.character(summarydat$AGENCY_CODE)
   
   ## grab 3 year summary statistics for this vessel
   tmp_vessel_info <- left_join(tmp_vessel, summarydat, by=c("drvid"="VESSEL_NUM", "agency_code"="AGENCY_CODE"))
   
-  
   ## if more than one vessel length was recorded in the past three years AND the max length was within 10ft of the min length ##
-  if(!is.na(tmp_vessel_info$n_lengths) && tmp_vessel_info$n_length > 1 && tmp_vessel_info$max_length < (10+tmp_vessel_info$min_length)){
+  if(!is.na(tmp_vessel_info$n_lengths) && tmp_vessel_info$n_lengths > 1 && tmp_vessel_info$max_length < (10+tmp_vessel_info$min_length)){
     warnmessage <- NA
-    final_vessel_length <- tmp_vessel_info$med2yr
+    final_vessel_length <- tmp_vessel_info$median2yr
     ### if the number of unique vessel lengths recorded was one, save 'type' as unique
     if(tmp_vessel_info$n_unique == 1){
-      length_calc <- "unique_2up"
+      length_calc <- "unique"
       #cat(length_calc)
     } else{
       ### if more than two unique vessel lengths were recorded, save 'type' as 2yr mean
-      length_calc <- "2yrmed"
+      length_calc <- "2yrmedian"
     }
     #cat(length_calc)
   }
@@ -57,10 +47,6 @@ get_vessel_length <- function(permits, vesseldat, lengthdat, summarydat, index){
     #cat("calculating summarydat_5yr\n")
     ### find summary statistics for the most recent 5 years for this particular vessel
     target_reg_years <- seq(y-4,y)
-    
-    ## dealing with R's annoying object class assignment habit
-    lengthdat$VESSEL_NUM <- as.character(lengthdat$VESSEL_NUM)
-    lengthdat$AGENCY_CODE <- as.character(lengthdat$AGENCY_CODE)
     
     summarydat_5yr <- lengthdat %>%
       filter(VESSEL_NUM == tmp_vessel$drvid) %>%
@@ -75,13 +61,6 @@ get_vessel_length <- function(permits, vesseldat, lengthdat, summarydat, index){
                 min_length = min(VESSEL_LENGTH),
                 mode_length = getmode(VESSEL_LENGTH),
                 med_length = median(VESSEL_LENGTH))
-    
-    ### dealing with R's annoying object class assignment habit
-    tmp_vessel$drvid <- as.character(tmp_vessel$drvid)
-    summarydat_5yr$VESSEL_NUM <- as.character(summarydat_5yr$VESSEL_NUM)
-    tmp_vessel$agency_code <- as.character(tmp_vessel$agency_code)
-    summarydat_5yr$AGENCY_CODE <- as.character(summarydat_5yr$AGENCY_CODE)
-    #cat("converted factors to character\n")
     
     ### grab 5 year summary statistics for this vessel
     tmp_vessel_info <- left_join(tmp_vessel, summarydat_5yr, by=c("drvid"="VESSEL_NUM", "agency_code"="AGENCY_CODE"))
@@ -142,9 +121,9 @@ get_vessel_length <- function(permits, vesseldat, lengthdat, summarydat, index){
     } ###
   } ##
   if(is.na(warnmessage)){
-    output_vec <- c(tmp_vessel_info$n_length, tmp_vessel_info$n_unique, final_vessel_length, length_calc)
+    output_vec <- c(tmp_vessel_info$n_lengths, tmp_vessel_info$n_unique, final_vessel_length, length_calc)
   } else{
-    output_vec <- c(tmp_vessel_info$n_length, tmp_vessel_info$n_unique, final_vessel_length, length_calc, warnmessage)
+    output_vec <- c(tmp_vessel_info$n_lengths, tmp_vessel_info$n_unique, final_vessel_length, length_calc, warnmessage)
   }
   return(output_vec)
 }
