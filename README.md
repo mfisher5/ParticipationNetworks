@@ -61,7 +61,7 @@ To rerun the entire analysis, use the ordered .Rmd scripts in the **scripts** fo
 1. Fork and clone the repository.
 2. Copy raw fish ticket and vessel registration data downloaded from PacFIN into the **data/raw** directory. This folder is already included in the `.gitignore` file. 
 3. Run the scripts in order (details provided in the **scripts** directory README). We suggest that you check and update the `.gitignore` file after every script, to avoid accidentally publishing data containing confidential information.
-4. Use the scripts in the **scripts/figures** folder to recreate the figures in Fisher et al. (in revision).
+4. Use the scripts in the **scripts/figures** folder to recreate the figures and tables in Fisher et al. (in revision).
 
 <br>
 

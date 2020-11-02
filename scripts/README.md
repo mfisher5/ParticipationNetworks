@@ -1,6 +1,6 @@
 ## Scripts
 
-Conduct the network analyses from Fisher et al. (in prep) using these RMarkdown scripts. They are ordered by step in the analysis, and will source functions from the `R` directory. Landings data are organized by fish ticket, and metiers identified within each port group. Where possible, `.html` files are provided as examples.
+Conduct the network analyses from Fisher et al. (in revision) using these RMarkdown scripts. They are ordered by step in the analysis, and will source functions from the `R` directory. Landings data are organized by fish ticket, and metiers identified within each port group. Where possible, `.html` files are provided as examples.
 
 
 (0. process the raw landings data from PacFIN)
@@ -28,3 +28,5 @@ Conduct the network analyses from Fisher et al. (in prep) using these RMarkdown 
 
 
 Scripts in the **Figures** folder produce the figures used in the main text or the supplement.
+
+*Note that the code for the directed networks is specifically constructed to understand vessel participation and spillover centered around the Dungeness crab fishery. If you wish to apply this analysis to a different event / fishery, please contact the authors first!*

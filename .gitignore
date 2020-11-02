@@ -16,4 +16,4 @@ results/figures/fig1/*.png
 results/figures/fig1/*.ppt
 results/figures/fig1/*.pptx
 results/figures/fig1/*.pdf
-scripts/00_calculate_vessel_lengths.Rmd
+results/figures/TableS*
