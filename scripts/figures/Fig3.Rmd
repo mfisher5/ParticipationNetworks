@@ -213,11 +213,20 @@ gear_legend <- data.frame(gear=c("Pot","Hook & Line","Pot/Hook & Line","Trawl","
            y=c(6,5,4,3,2,1))
 
 legend_plot <- ggplot(gear_legend, aes(x=x,y=y)) +
-  geom_point(size=4,col=gear_legend$colorkey) +
+  geom_point(size=8,col=gear_legend$colorkey) +
+  geom_point(pch=21, size=8,col='black', fill=NA) +
   geom_text(aes(x=x,y=y,label=gear), hjust=0, vjust=0.5, nudge_x=0.05, size=6) +
   xlim(c(1,2)) +
   theme_void()
 legend_plot
+```
+<br>
+
+```{r include=FALSE, eval=FALSE}
+## Save the legend ##
+png(here::here('results','figures','Fig3_legend.png'), res=200,width=900,height=700)
+legend_plot
+dev.off()
 ```
 <br>
 
@@ -256,7 +265,7 @@ grob3 <- arrangeGrob(grobs=list(legend_plot,blank_plot,blank_plot,blank_plot,bla
 
 Save the 3 columns into a single image, with the legend to the right of the network graphs.
 ```{r}
-png(here::here("drafts/figures","Figure3_test.png"), width=2200,height=2500,res=200)
+png(here::here("drafts/figures","Figure3_legend.png"), width=2200,height=2500,res=200)
 grid.arrange(grobs = list(grob1,grob2,grob3), ncol=3, widths=c(1,1,0.5))
 dev.off()
 ```
