@@ -271,23 +271,6 @@ dev.off()
 ```
 <br>
 
-### Save Wide Format Directed Network
-
-Create a data frame with gear type and corresponding color key. Use simple x/y coordinates to create a legend key with ggplot.
-```{r}
-gear_legend_wide <- data.frame(gear=c("Pot","Shrimp Trawl","Pot/Hook & Line","Trawl","Hook & Line", "Other"),
-           colorkey=c("darkorange2","hotpink","tan1","chocolate4","darkgoldenrod1","plum3"),
-           x=c(rep(1,2),rep(2,2),rep(3,2)),
-           y=rep(c(2,1),3))
-
-legend_plot_wide <- ggplot(gear_legend_wide, aes(x=x,y=y)) +
-  geom_point(size=4,col=gear_legend_wide$colorkey) +
-  geom_text(aes(x=x,y=y,label=gear), hjust=0, vjust=0.5, nudge_x=0.05, size=6) +
-  xlim(c(1,4)) +
-  ylim(c(0,3)) +
-  theme_void()
-legend_plot_wide
-```
 
 
 ---

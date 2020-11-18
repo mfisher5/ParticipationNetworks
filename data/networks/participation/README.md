@@ -4,4 +4,4 @@ Undirected participation networks provide a snapshot of cross-fishery participat
 
 Adjacency matrices, the data used to build network objects, should be saved as `.csv` files. The `igraph` network objects, which include network structure and additional information for nodes and edges (i.e. weights, colors) are saved as `.rds`.
 
-Files are named using the following template: `igraph_[port group]_[crab year]_[early/late season]_version`. You can ignore the version information.
+Files are named using the following template: `igraph_[PortGroupCode]_[CrabYear]_[Season]_version`. You can ignore the version information.

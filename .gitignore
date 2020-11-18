@@ -6,8 +6,6 @@ data/input/*.csv
 data/input/length/*.csv
 data/input/metiers/*.csv
 data/intermediate_metiers/reference/*.csv
-data/networks/vessel_flow/*.rds
-data/networks/participation/*.rds
 data/networks/participation/3yr_mean/*.rds
 results/statistics/*SPEARMAN.csv
 results/statistics/2007_2016*.csv
@@ -21,3 +19,7 @@ results/figures/fig1/*.pptx
 results/figures/fig1/*.pdf
 results/figures/TableS*
 results/figures/*.png
+data/networks/vessel_flow/*.rds
+data/networks/participation/*.rds
+data/networks/vessel_flow/*.csv
+data/networks/participation/*.csv
