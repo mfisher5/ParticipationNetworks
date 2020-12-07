@@ -7,7 +7,7 @@ These materials use fishery landings data to generate and analyze fisheries part
 The directory structure follows Wilson et al. (2017) *Good enough practices in scientific computing*. 
 
 - All Rmd scripts for the analysis are in **scripts**
-- Custom functions sourced for the analysis are in **R**. Functions have been documented using `Roxygen2` syntax. 
+- Custom functions sourced for the analysis are in **R**. Functions have been documented using `Roxygen2` syntax, saved into **man** 
 - Documentation, including detailed descriptions of directed and undirected network structure, is in **doc**
 - Raw, processed, and intermediate data files are saved in **data**
 - Results (figures / tables, final network metrics) will be saved into  **results**
@@ -37,16 +37,16 @@ Fishing seasons for Dungeness crab span two calendar years, and so this analysis
 
 ### Data
 
-Raw landings and registration data are not included for confidentiality, and its use in Fisher et al. (in revision) is protected under a non-disclosure agreement. However, these data can be acquired by direct request from the California Department of Fish and Wildlife. We have provided the SQL code to download raw data from the PacFIN database in the [*data/raw*](https://github.com/mfisher5/ParticipationNetworks/tree/master/data/raw) folder.
+Raw landings and registration data are not included for confidentiality, and its use in Fisher et al. is protected under a non-disclosure agreement. However, these data can be acquired by direct request from the California Department of Fish and Wildlife. We have provided the SQL code to download raw data from the PacFIN database in the [*data/raw*](https://github.com/mfisher5/ParticipationNetworks/tree/master/data/raw) folder.
 
 We have provided the following aggregated, non-confidential data:
-1. Adjacency matrices and `graph` objects for undirected fisheries participation networks (**data** directory)
-2. Adjacency matrices and `graph` objects for directed participation networks (**data** directory)
-3. Network metrics calculated for Fisher et al. (in revision), used to run generalized linear models (**results** directory)
+1. `igraph` objects for undirected fisheries participation networks (**data** directory)
+2. Adjacency matrices and `igraph` objects for directed participation networks (**data** directory)
+3. Network metrics calculated for Fisher et al., used to run generalized linear models (**results** directory)
 
 <br>
 
-We have also provided the following ancillary data in the **data** directory:
+We have also included the following ancillary data in the **data** directory:
 
 1. Duration of port group closures in the California Dungeness crab fishery, from the 2007 through 2017 crab years
 2. The date that the first port of landing in each California port group opened during the 2016 crab year

@@ -73,7 +73,7 @@ directed_early_base <- function (g) {
     ggraph(g, 'igraph', algorithm = 'tree') +
       geom_edge_diagonal(aes(y=edge.y,yend=edge.yend,width=E(g)$weight), 
                          color="grey85",end_cap = circle(0.5),arrow=arrow(length=unit(0.3,'cm'))) +
-      geom_edge_loop(aes(y=edge.y,width=E(g)$weight), span=50,direction=0,strength=0.90), color="grey85") +
+      geom_edge_loop(aes(y=edge.y,width=E(g)$weight, span=50,direction=0,strength=0.90), color="grey85") +
       geom_node_point(aes(y=node.y),color=factor(V(g)$color),
                       size=vsizes_scaled) +
       geom_node_text(aes(y=node.y.lab.left,label = common_name, hjust=1), size=5) +
