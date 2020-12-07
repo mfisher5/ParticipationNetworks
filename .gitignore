@@ -6,7 +6,6 @@ data/input/*.csv
 data/input/length/*.csv
 data/input/metiers/*.csv
 data/intermediate_metiers/reference/*.csv
-data/networks/participation/*.rds
 !data/networks/vessel_flow/*.csv
 !data/input/pcgroup_mean_coordinates.csv
 !data/input/DCRB_Historic_Closures_CA_updated.csv
