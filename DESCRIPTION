@@ -1,15 +1,14 @@
 Package: ParticipationNetworks
 Title: Fisheries Participation Networks
-Version: 0.0.0.9000
+Version: 1.1.0.0000
 Authors@R: 
     person(given = "Mary",
            family = "Fisher",
            role = "cre",
            email = "mfisher5@uw.edu",
            comment = c(ORCID = "0000-0003-0729-3929"))
-Description: Generate and analyze fisheries participation networks for Fisher et al. (in prep).
-License: `use_mit_license()`, `use_gpl3_license()` or friends to
-    pick a license
+Description: Generate and analyze fisheries participation networks for Fisher et al. (in press) PNAS.
+License: `use_gpl3_license()`
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
