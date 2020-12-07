@@ -4,7 +4,7 @@
 These materials use fishery landings data to generate and analyze fisheries participation networks, as in Fisher et al. (in press) *PNAS*. This repository builds on R code originally produced for [Fuller et al. (2017)](https://doi.org/10.1093/icesjms/fsx128).
 
 
-The directory structure follows Wilson et al. (2017) *Good enough practices in scientific computing*. 
+The directory structure generally follows Wilson et al. (2017) *Good enough practices in scientific computing*. 
 
 - All Rmd scripts for the analysis are in **scripts**
 - Custom functions sourced for the analysis are in **R**. Functions have been documented using `Roxygen2` syntax, saved into **man** 
