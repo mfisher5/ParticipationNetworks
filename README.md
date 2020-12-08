@@ -1,5 +1,5 @@
 # Fisheries Participation Networks
-[![DOI](https://zenodo.org/badge/273792008.svg)](https://zenodo.org/badge/latestdoi/273792008)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4310398.svg)](https://doi.org/10.5281/zenodo.4310398)
 
 These materials use fishery landings data to generate and analyze fisheries participation networks, as in Fisher et al. (in press) *PNAS*. This repository builds on R code originally produced for [Fuller et al. (2017)](https://doi.org/10.1093/icesjms/fsx128).
 
