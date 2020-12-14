@@ -56,6 +56,7 @@ And calls the following functions.
 source(here::here('R','generate_multiyr_participation_network.R'))
 source(here::here('R','average_participation_network.R'))
 source(here::here('R','calc_network_stats.R'))
+source(here::here('R','plot_3yr_networks.R'))
 ```
 <br>
 
@@ -66,8 +67,11 @@ Select your directories.
 ## location of fish ticket with metiers assigned, metier key for each port group
 indir = 'data/input/metiers'
 
+## location of annual participation networks
+netdir = 'data/networks/participation'
+
 ## output directory for igraph object
-outdir = 'data/networks/3yr'
+outdir = 'data/networks/participation/3yr'
 
 ## output directory where annual network stat summaries are saved 
 statdir = 'results/statistics'
@@ -107,11 +111,7 @@ contr_cutoff <- 0.10
 
 Set these objects according to your user inputs from Scripts 1 and 3
 ```{r}
-## the value of `k` for the k-nearest neighbor function
 k <- 1
-
-## the reference years first run through infomap
-ref_years <- c(2010,2011)
 ```
 <br>
 
@@ -125,7 +125,7 @@ for(y in years){
     tmptix <- read.csv(here::here(indir, paste0("FishTix_crab", y, "_metiers.csv")), stringsAsFactors = FALSE) %>%
     filter(pcgroup %in% myports)
   } else{
-  tmptix <- read.csv(here::here(indir, paste0("FishTix_crab", y, "_metiers_k1_recoded.csv")), stringsAsFactors = FALSE) %>%
+  tmptix <- read.csv(here::here(indir, paste0("FishTix_crab", y, "_metiers_k",k,"_recoded.csv")), stringsAsFactors = FALSE) %>%
     filter(pcgroup %in% myports)
   }
   if(exists('fishtix')){
@@ -169,7 +169,7 @@ for(p in myports){
     ### get igraph objects for each year ###
     graphs_list = list()
     for(i in seq(1,length(years))){
-      tmpgraph <- readRDS(paste0(indir,"igraph_",p,"_",years[i],"_",c,".rds"))
+      tmpgraph <- readRDS(here::here(netdir, paste0("igraph_",p,"_",years[i],"_",c,"_rmCrab.rds")))
       graphs_list[[i]] = tmpgraph
     }
     
@@ -263,37 +263,11 @@ grid.arrange(myplot.n, myplot.ed, myplot.m, ncol=3, widths=c(1,1,1.5))
 
 # 4: Plot 3-year Networks
 
-This is the plotting function to generate the networks for Figure 1, Fisher et al. 
-```{r}
-### plotting function for section 3
-plot_simple <- function(g, outdir){
-  port_group <- unique(V(g)$p)
-  y <- unique(V(g)$year)
-  l <-layout.circle(g)
-  l <- cbind(l, 1:vcount(g))
-  rownames(l) <- V(g)$name
-  tmpnames <- list(V(g)$name)
-  V(g)$colors <- unlist(lapply(tmpnames, function (x) {ifelse(x=="DCRB_POT","darkorange1","gray25")}))
-  png(here::here(outdir, paste0(port_group,"_", y,"_3yrAVG_circular_dcrb.png")),bg="transparent")
-  plot(g, vertex.size = V(g)$importance/(max(V(g)$importance)*0.025), 
-       layout = l, #where to put the nodes on the plot
-       edge.width = sqrt(E(g)$weight)/(max(sqrt(E(g)$weight))*0.10),
-       edge.curved=F,
-       axes = F,
-       edge.color = 'gray98',
-       vertex.color = V(g)$colors, 
-       vertex.label = NA, 
-       vertex.frame.color=NA) #vertex.label.color = '#cb4b16'
-  dev.off()
-}
-```
-<br>
-
 Read back in the graph objects and plot them.
 ```{r}
 for(p in myports){
   tmpgraph <- readRDS(here::here(outdir, paste0("igraph_",p,"_3yrAVG_",c,".rds")))
-  plot_simple(tmpgraph, outdir=pngdir)
+  plot_3yr(tmpgraph, outdir=pngdir)
 }
 ```
 

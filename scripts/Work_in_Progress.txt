@@ -1,2 +1,3 @@
 Some of the drvids are recorded as NAs when the recoded metier assignments are written out for non-reference years, across port groups.
 Add supplemental network metrics GLMs
+Check sections 2.1 - 2.2; for loops working with 'y'?
