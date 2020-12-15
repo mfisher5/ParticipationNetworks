@@ -4,16 +4,13 @@
 #' average numeric attributes together to be incorporated into
 #' a new participation network.
 #'
-#' @param tickets fish tickets data frame
-#' @param pcid_choose specify a port group
-#' @param years_choose a vector of the crab years to build a network for
-#' @param filter use the `min_vessels` and `min_contribution` objects to filter the data
-#' @param filter_subgraph a filtering option from the original function that was turned off for Fisher et al.
-#' @param min_vessels the minimum number of vessels participating in a fishery for that fishery to be retained in the network
-#' @param min_contribution the minimum contribution (as a proportion) to total exvessel revenue for a fishery to be retained for a given vessel
-#' @return non-confidential fisheries partition network as an igraph object
+#' @param multiyr_graph igraph object for multi-year participation network
+#' @param annual_graphs a list of igraph objects; annual participation networks for each year in the multi-year network
+#' @param period early or late season?
+#' @param years years included in the multi-year network, and covered by the annual_graphs list
+#' @return averaged multi-year igraph object, and the averaged vertex data frame used to build it
 #' @examples
-#' pre_shock <- participation_network_multiyr(close_dat, filter = TRUE, filter_subgraph = FALSE)
+#' avg_g <- average_participation_networks(multiyr_graph=multiyr_g,annual_graphs=graphs_list,period=c,years=years)[[1]]
 #' @export
 average_participation_networks <- function(multiyr_graph,annual_graphs,period,years){
   #### Average vertex attributes from annual graphs ####

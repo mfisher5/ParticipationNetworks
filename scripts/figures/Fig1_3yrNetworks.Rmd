@@ -189,7 +189,7 @@ for(p in myports){
     # multi-year graph
     multiyr_g <- participation_network_multiyr(mydat, filter = TRUE, filter_subgraph =FALSE, min_vessels = 3, min_contribution = 0.10)
     # averaged multi-year graph
-    avg_g <- average_participation_networks(multiyr_graph=multiyr_g,annual_graphs=graphs_list,period=c,years=years)
+    avg_g <- average_participation_networks(multiyr_graph=multiyr_g,annual_graphs=graphs_list,period=c,years=years)[[1]]
     
     # write out graph
     saveRDS(multiyr_g, here::here(outdir, paste0("igraph_",p,"_3yr_",c,".rds")))
