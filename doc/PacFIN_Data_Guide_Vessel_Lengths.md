@@ -28,7 +28,7 @@ This function calls two other custom R functions: `get_median_length` will calcu
 
 The following flow chart depicts the major decision points in the `calc_length` function.
 
-![length_fx_chart]()
+![length_fx_chart](https://github.com/mfisher5/ParticipationNetworks/blob/master/doc/img/length_flowchart.png?raw=true)
 
 
 ## Script 00 Workflow: Processed Vessel Lengths
