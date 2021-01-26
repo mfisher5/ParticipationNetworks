@@ -30,14 +30,14 @@ calc_length <- function(permits, vesseldat, lengthdat, summarydat, index){
   ## if more than one vessel length was recorded in the past three years AND the max length was within 10ft of the min length ##
   if(!is.na(tmp_vessel_info$n_lengths) && tmp_vessel_info$n_lengths > 1 && tmp_vessel_info$max_length < (10+tmp_vessel_info$min_length)){
     warnmessage <- NA
-    final_vessel_length <- tmp_vessel_info$median2yr
+    final_vessel_length <- tmp_vessel_info$med_length
     ### if the number of unique vessel lengths recorded was one, save 'type' as unique
     if(tmp_vessel_info$n_unique == 1){
       length_calc <- "unique"
       #cat(length_calc)
     } else{
       ### if more than two unique vessel lengths were recorded, save 'type' as 2yr mean
-      length_calc <- "2yrmedian"
+      length_calc <- "3yrmedian"
     }
     #cat(length_calc)
   }

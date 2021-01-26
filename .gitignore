@@ -16,3 +16,5 @@ results/figures/fig1/*.ppt
 results/figures/fig1/*.pptx
 results/figures/fig1/*.pdf
 results/figures/fig1/in_prep*
+doc/img/*.ppt
+doc/img/*.pptx

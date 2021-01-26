@@ -68,7 +68,7 @@ library(lubridate)
 And calls the following functions. 
 ```{r}
 source(here::here('R','get_vessel_length.R'))
-source(here::here('R','lengths_2yr_median.R'))
+source(here::here('R','lengths_median.R'))
 source(here::here('R','get_mode.R'))
 source(here::here('R','lengths_5yr_registration.R'))
 ```
@@ -349,7 +349,7 @@ for(y in unique(vessels$year)){
               n_unique = length(unique(VESSEL_LENGTH)),
               max_length = max(VESSEL_LENGTH),
               min_length = min(VESSEL_LENGTH),
-              median2yr = get2yrmedian(x=VESSEL_LENGTH, years=REGISTRATION_YEAR)) %>% 
+              med_length = get_median_length(x=VESSEL_LENGTH, years=REGISTRATION_YEAR)) %>% 
     ungroup()
   
   # create empty vectors for this year
