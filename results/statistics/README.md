@@ -2,7 +2,7 @@
 
 Network metrics (node- and network-level) calculated from undirected fisheries participation networks.
 
-We have provided the network metrics data used for Fisher et al. (in revision) in `2008_2017_ParticipationNetworkMetrics.csv`. Not all metrics reported in the data frame were used for final analyses. The data included in this data frame are: 
+We have provided the network metrics data used for Fisher et al. (2021) in `2008_2017_ParticipationNetworkMetrics.csv`. Not all metrics reported in the data frame were used for final analyses. The data included in this data frame are: 
 1. `y` (year)
 2. `period` (early or late season)
 3. `pcgroup` (3 letter port group code)
@@ -30,7 +30,7 @@ We have provided the network metrics data used for Fisher et al. (in revision) i
 
 ### Metric Definitions
 
-Equations for the network metrics used for final analyses in Fisher et al. (in revision) are also available in the Supplementary Material. 
+Equations for the network metrics used for final analyses in Fisher et al. (2021) are also available in the Supplementary Material. 
 
 ![ed](https://github.com/mfisher5/ParticipationNetworks/blob/master/doc/img/ED_equation.png?raw=true)
 

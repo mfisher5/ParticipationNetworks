@@ -1,7 +1,7 @@
 # Fisheries Participation Networks
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4310398.svg)](https://doi.org/10.5281/zenodo.4310398)
 
-These materials use fishery landings data to generate and analyze fisheries participation networks, as in Fisher et al. (in press) *PNAS*. This repository builds on R code originally produced for [Fuller et al. (2017)](https://doi.org/10.1093/icesjms/fsx128).
+These materials use fishery landings data to generate and analyze fisheries participation networks, as in [Fisher et al. (2021)](https://doi.org/10.1073/pnas.2014379117). This repository builds on R code originally produced for Fuller et al. (2017).
 
 
 The directory structure generally follows Wilson et al. (2017) *Good enough practices in scientific computing*. 
@@ -37,12 +37,12 @@ Fishing seasons for Dungeness crab span two calendar years, and so this analysis
 
 ### Data
 
-Raw landings and registration data are not included for confidentiality, and its use in Fisher et al. is protected under a non-disclosure agreement. However, these data can be acquired by direct request from the California Department of Fish and Wildlife. We have provided the SQL code to download raw data from the PacFIN database in the [*data/raw*](https://github.com/mfisher5/ParticipationNetworks/tree/master/data/raw) folder.
+Raw landings and registration data are not included for confidentiality, and its use in Fisher et al. (2021) is protected under a non-disclosure agreement. However, these data can be acquired by direct request from the California Department of Fish and Wildlife. We have provided the SQL code to download raw data from the PacFIN database in the [*data/raw*](https://github.com/mfisher5/ParticipationNetworks/tree/master/data/raw) folder.
 
 We have provided the following aggregated, non-confidential data:
 1. `igraph` objects for undirected fisheries participation networks (**data** directory)
 2. Adjacency matrices and `igraph` objects for directed participation networks (**data** directory)
-3. Network metrics calculated for Fisher et al., used to run generalized linear models (**results** directory)
+3. Network metrics calculated for Fisher et al. (2021), used to run generalized linear models (**results** directory)
 
 <br>
 
@@ -62,7 +62,7 @@ To rerun the entire analysis, use the ordered .Rmd scripts in the **scripts** fo
 1. Fork and clone the repository.
 2. Copy raw fish ticket and vessel registration data downloaded from PacFIN into the **data/raw** directory. This folder is already included in the `.gitignore` file. 
 3. Run the scripts in order (details provided in the **scripts** directory README). We suggest that you check and update the `.gitignore` file after every script, to avoid accidentally publishing data containing confidential information.
-4. Use the scripts in the **scripts/figures** folder to recreate the figures and tables in Fisher et al. (in revision).
+4. Use the scripts in the **scripts/figures** folder to recreate the figures and tables in Fisher et al. (2021).
 
 <br>
 
@@ -87,7 +87,9 @@ The scripts *Fig3.R* and *FigS5.R* will generate the directed participation netw
 
 References
 
-E. C. Fuller et al., Characterizing fisheries connectivity in marine social–ecological systems. ICES Journal of Marine Science 74, 2087-2096 (2017).
+M. C. Fisher et al., Climate shock effects and mediation in fisheries. PNAS 188(2), (2021). [paper here](https://doi.org/10.1073/pnas.2014379117)
+
+E. C. Fuller et al., Characterizing fisheries connectivity in marine social–ecological systems. ICES Journal of Marine Science 74, 2087-2096 (2017). [paper here](https://doi.org/10.1093/icesjms/fsx128)
 
 M. Rosvall, C. T. Bergstrom, Maps of random walks on complex networks reveal community structure. Proceedings of the National Academy of Sciences 105, 1118 (2008).
 
