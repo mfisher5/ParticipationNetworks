@@ -26,7 +26,7 @@ participation_network_crabyear <- function(tickets, pcid_choose=NA, year_choose=
     return(NA)
   }
   # get total number of boats (MF 2/26/2019)
-  fleet_size <- length(unique(filter(tickets, drvid!='NONE')))
+  fleet_size <- length(unique(filter(tickets, drvid!='NONE')$drvid))
   
   # create a df with 2 columns: metier.name and max_boats, the maximum boats that participated in the metier during the specified year(s)
   n_boats <- tickets %>% filter(drvid!='NONE') %>%
