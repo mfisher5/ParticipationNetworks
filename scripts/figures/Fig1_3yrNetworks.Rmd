@@ -33,6 +33,7 @@ knitr::opts_chunk$set(echo = TRUE)
 script_start_time <- Sys.time()
 
 # ggplot theme
+library(ggplot2)
 plot_theme <-   theme_minimal()+
   theme(text=element_text(family="sans",size=12,color="black"),
         legend.text = element_text(size=14),
@@ -57,6 +58,7 @@ source(here::here('R','generate_multiyr_participation_network.R'))
 source(here::here('R','average_participation_network.R'))
 source(here::here('R','calc_network_stats.R'))
 source(here::here('R','plot_3yr_networks.R'))
+source(here::here('R','color_network_nodes.R'))
 ```
 <br>
 
@@ -271,6 +273,32 @@ for(p in myports){
 }
 ```
 
+
+
+Identify the fisheries and gear types that aren't included in the simplified 3yr plots, for a specific port group and season.
+```{r}
+p="ERA"
+c="early"
+g <- readRDS(here::here(outdir, paste0("igraph_",p,"_3yrAVG_",c,".rds")))
+
+l <-layout.circle(g)
+l <- cbind(l, 1:vcount(g))
+rownames(l) <- V(g)$name
+tmpnames <- list(V(g)$name)
+# V(g)$colors <- unlist(lapply(tmpnames, function (x) {ifelse(x=="DCRB_POT","darkorange1","dodgerblue4")}))
+# png(here::here(pngdir, paste0(p,"_", c,"_3yrAVG_circular_dcrb_labeled.png")),bg="transparent")
+plot(g, vertex.size = V(g)$importance/(max(V(g)$importance)*0.025), 
+     layout = l, #where to put the nodes on the plot
+     edge.width = sqrt(E(g)$weight)/(max(sqrt(E(g)$weight))*0.10),
+     edge.curved=F,
+     axes = F,
+     edge.color = 'grey58',
+     vertex.color = vertex_color(g), 
+     vertex.label = V(g)$name, 
+     vertex.frame.color=NA) #vertex.label.color = '#cb4b16'
+# dev.off()
+```
+<br>
 
 
 
