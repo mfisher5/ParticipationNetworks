@@ -10,7 +10,7 @@ Saving the state of the project library
 
 1. Opened the *ParticipationNetworks* R Project
 2. Initialized a new project-local environment with a private R library: `rev::init()`
-3. Checked to ensure all packages from cripts 00 - 10, and those in the "figures" folder, were installed (they were)
+3. Checked to ensure all packages from scripts 00 - 10, and those in the "figures" folder, were installed (they were)
 4. Saved the state of the project library: `rev::snapshot`
 
 <br>
