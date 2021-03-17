@@ -6,14 +6,17 @@ Documentation for `renv`, including the code copied below, can be found [here](h
 
 <br>
 
-```
-install.packages("renv")
-# getwd() # check working directory
-rev::init()
-```
+Saving the state of the project library
 
-*Checked to ensure all packages from scripts 00 - 10, and those in the "figures" folder, were installed*
+1. Opened the *ParticipationNetworks* R Project
+2. Initialized a new project-local environment with a private R library: `rev::init()`
+3. Checked to ensure all packages from cripts 00 - 10, and those in the "figures" folder, were installed (they were)
+4. Saved the state of the project library: `rev::snapshot`
 
-```
-rev::snapshot()
-```
+<br>
+
+To load the the project library
+
+1. Install `renv`: `install.packages("renv")`
+2. Open the *ParticipationNetworks* R Project, or your own R project
+3. Load environment: `rev::restore()`
