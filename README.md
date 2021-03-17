@@ -12,6 +12,8 @@ The directory structure generally follows Wilson et al. (2017) *Good enough prac
 - Raw, processed, and intermediate data files are saved in **data**
 - Results (figures / tables, final network metrics) will be saved into  **results**
 
+The local R environment used to build the repository has been preserved with `renv`; `renv::restore()` will load the appropriate versions of R packages / dependencies. 
+
 ---
 
 <br>
